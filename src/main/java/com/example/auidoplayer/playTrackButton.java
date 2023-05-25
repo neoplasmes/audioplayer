@@ -1,6 +1,8 @@
 package com.example.auidoplayer;
 
-public class playTrackButton {
+import javafx.scene.control.Button;
+
+public class playTrackButton extends Button {
 
     public playTrackButton(){
 
