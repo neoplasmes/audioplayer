@@ -1,5 +1,6 @@
 package com.example.auidoplayer;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import java.io.File;
 import java.net.URL;
@@ -262,9 +263,23 @@ public class Controller implements Initializable{
     @FXML
     private void onDragDroppedCurrent(DragEvent event){
         List<File> files = event.getDragboard().getFiles();
+        List<Button> buttons = new ArrayList<>(); // дост.
+        Integer buttonID = 0;
 
         for (File file : files) {
-            current_playlist.getChildren().add(new Button(file.getName()));
+            buttonID += 1;
+            String pathToMusic = file.getAbsolutePath();
+            Button newButton = new Button(file.getName());
+            current_playlist.getChildren().add(newButton);
+            newButton.setId((buttonID.toString())); // дост. сделали id каждой кнопке
+            newButton.setOnAction(new EventHandler<ActionEvent>() {
+
+                @Override
+                public void handle(ActionEvent event) {
+                    newButton.setText("You've clicked!");
+                }
+            });
+            System.out.println(newButton);
         }
 
     }
