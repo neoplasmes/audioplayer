@@ -162,6 +162,7 @@ public class Controller implements Initializable{
 
             media = new Media(songs.get(songNumber).toURI().toString());
             mediaPlayer = new MediaPlayer(media);
+            System.out.println(songs.get(songNumber).toURI().toString());
 
             songLabel.setText(songs.get(songNumber).getName());
 
@@ -276,7 +277,9 @@ public class Controller implements Initializable{
 
                 @Override
                 public void handle(ActionEvent event) {
-                    newButton.setText("You've clicked!");
+                    media = new Media(file.toURI().toString());
+                    mediaPlayer = new MediaPlayer(media);
+                    playMedia();
                 }
             });
             System.out.println(newButton);
