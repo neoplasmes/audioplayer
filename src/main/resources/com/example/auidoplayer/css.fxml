@@ -12,39 +12,39 @@
 
 <AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="517.0" prefWidth="959.0" style="-fx-background-color: #222222;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auidoplayer.Controller">
    <children>
-      <Label fx:id="songLabel" alignment="CENTER" layoutX="-1.0" prefHeight="100.0" prefWidth="655.0" text="MP3 Player" textFill="#00ff1a">
+      <Label fx:id="songLabel" alignment="CENTER" layoutY="14.0" prefHeight="100.0" prefWidth="623.0" text="MP3 Player" textFill="WHITE">
          <font>
             <Font size="65.0" />
          </font>
       </Label>
-      <ProgressBar fx:id="songProgressBar" layoutX="2.0" layoutY="345.0" prefHeight="18.0" prefWidth="623.0" progress="0.0" />
-      <Button fx:id="playButton" layoutX="3.0" layoutY="363.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="46.0" prefWidth="84.0" text="PLAY">
+      <ProgressBar fx:id="songProgressBar" layoutX="3.0" layoutY="393.0" prefHeight="18.0" prefWidth="623.0" progress="0.0" />
+      <Button fx:id="playButton" layoutX="41.0" layoutY="424.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="46.0" prefWidth="84.0" style="-fx-background-color: #FFFFFF;" text="PLAY">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="pauseButton" layoutX="88.0" layoutY="363.0" mnemonicParsing="false" onAction="#pauseMedia" prefHeight="46.0" prefWidth="85.0" text="PAUSE">
+      <Button fx:id="pauseButton" layoutX="135.0" layoutY="424.0" mnemonicParsing="false" onAction="#pauseMedia" prefHeight="46.0" prefWidth="85.0" style="-fx-background-color: #FFFFFF;" text="PAUSE">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="resetButton" layoutX="173.0" layoutY="363.0" mnemonicParsing="false" onAction="#resetMedia" prefHeight="46.0" prefWidth="85.0" text="RESET">
+      <Button fx:id="resetButton" layoutX="229.0" layoutY="424.0" mnemonicParsing="false" onAction="#resetMedia" prefHeight="46.0" prefWidth="85.0" style="-fx-background-color: #FFFFFF;" text="RESET">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="previousButton" layoutX="258.0" layoutY="363.0" mnemonicParsing="false" onAction="#previousMedia" prefHeight="46.0" prefWidth="85.0" text="PREVIOUS">
+      <Button fx:id="previousButton" layoutX="320.0" layoutY="424.0" mnemonicParsing="false" onAction="#previousMedia" prefHeight="46.0" prefWidth="85.0" style="-fx-background-color: #FFFFFF;" text="PREVIOUS">
          <font>
             <Font size="13.0" />
          </font>
       </Button>
-      <Button fx:id="nextButton" layoutX="343.0" layoutY="363.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="46.0" prefWidth="85.0" text="NEXT">
+      <Button fx:id="nextButton" layoutX="415.0" layoutY="424.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="46.0" prefWidth="85.0" style="-fx-background-color: #FFFFFF;" text="NEXT">
          <font>
             <Font size="13.0" />
          </font>
       </Button>
-      <ComboBox fx:id="speedBox" layoutX="428.0" layoutY="363.0" onAction="#changeSpeed" prefHeight="46.0" prefWidth="79.0" promptText="SPEED" />
-      <Slider fx:id="volumeSlider" layoutX="507.0" layoutY="379.0" max="100.0" prefHeight="14.0" prefWidth="117.0" value="50.0" />
+      <ComboBox fx:id="speedBox" layoutX="507.0" layoutY="424.0" onAction="#changeSpeed" prefHeight="46.0" prefWidth="79.0" promptText="SPEED" style="-fx-background-color: #FFFFFF;" />
+      <Slider fx:id="volumeSlider" layoutX="488.0" layoutY="481.0" max="100.0" prefHeight="14.0" prefWidth="117.0" value="50.0" />
       <ScrollPane fx:id="currentPlaylistScroll" layoutX="630.0" layoutY="1.0" prefHeight="513.0" prefWidth="328.0">
          <content>
             <VBox fx:id="current_playlist" onDragDropped="#onDragDroppedCurrent" onDragOver="#onDragOverCurrent" prefHeight="505.0" prefWidth="321.0" style="-fx-background-color: #FFFFFF;" />
