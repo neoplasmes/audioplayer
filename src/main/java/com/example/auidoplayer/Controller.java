@@ -65,23 +65,23 @@ public class Controller implements Initializable{
     public void initialize(URL arg0, ResourceBundle arg1) {
 
         songs = new ArrayList<File>();
+//
+//        directory = new File("music");
+//
+//        files = directory.listFiles();
+//
+//        if(files != null) {
+//
+//            for(File file : files) {
+//
+//                songs.add(file);
+//            }
+//        }
 
-        directory = new File("music");
-
-        files = directory.listFiles();
-
-        if(files != null) {
-
-            for(File file : files) {
-
-                songs.add(file);
-            }
-        }
-
-        media = new Media(songs.get(songNumber).toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
-
-        songLabel.setText(songs.get(songNumber).getName());
+//        media = new Media(songs.get(songNumber).toURI().toString());
+//        mediaPlayer = new MediaPlayer(media);
+//
+//        songLabel.setText(songs.get(songNumber).getName());
 
         for(int i = 0; i < speeds.length; i++) {
 
@@ -277,6 +277,7 @@ public class Controller implements Initializable{
 
                 @Override
                 public void handle(ActionEvent event) {
+                    songs.add(file);
                     media = new Media(file.toURI().toString());
                     mediaPlayer = new MediaPlayer(media);
                     playMedia();
@@ -286,7 +287,6 @@ public class Controller implements Initializable{
         }
 
     }
-
 
 
 
