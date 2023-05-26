@@ -273,13 +273,19 @@ public class Controller implements Initializable{
             Button newButton = new Button(file.getName());
             current_playlist.getChildren().add(newButton);
             newButton.setId((buttonID.toString())); // дост. сделали id каждой кнопке
+            songs.add(file);
             newButton.setOnAction(new EventHandler<ActionEvent>() {
 
                 @Override
                 public void handle(ActionEvent event) {
-                    songs.add(file);
+                    try {
+                        pauseMedia();
+                    } catch (Exception e){
+
+                    }
                     media = new Media(file.toURI().toString());
                     mediaPlayer = new MediaPlayer(media);
+                    songLabel.setText(songs.get(songNumber).getName());
                     playMedia();
                 }
             });
