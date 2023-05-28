@@ -15,8 +15,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseButton;
@@ -55,7 +57,7 @@ public class Controller implements Initializable{
     @FXML
     private ScrollPane playlistScroll;
     @FXML
-    private GridPane playlistGrid;
+    private FlowPane playlistPane;
 
     private ArrayList<String> currentPlaylistMusic;
 
@@ -131,9 +133,11 @@ public class Controller implements Initializable{
         currentPlaylistScroll.setContent(current_playlist);
 
 
-        playlistGrid.setStyle("-fx-border-color: #000000");
+        playlistPane.setStyle("-fx-border-color: #000000");
+        playlistPane.setHgap(40.0);
+        playlistPane.setVgap(40.0);
 
-        playlistScroll.setContent(playlistGrid);
+        playlistScroll.setContent(playlistPane);
 
         //ColumnConstraints column = new ColumnConstraints();
         //column.setPercentWidth(0.2);
@@ -186,12 +190,14 @@ public class Controller implements Initializable{
                 }
             });
 
-            playlistGrid.add(b, test_i, 1);
-            test_i += 1;
+            playlistPane.getChildren().add(b);
+            playlistPane.setMargin(b, new Insets(40.0, 40.0,40.0,40.0));
         }
 
 
-
+        Button plusButton = new Button("+");
+        playlistPane.getChildren().add(plusButton);
+        playlistPane.setMargin(plusButton, new Insets(40.0, 40.0,40.0,40.0));
 
 
     }

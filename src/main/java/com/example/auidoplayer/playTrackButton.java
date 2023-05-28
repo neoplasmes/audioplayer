@@ -42,6 +42,24 @@ public class playTrackButton extends Label {
             }
         });
 
+        /*super.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+                    if(mouseEvent.getClickCount() == 1) {
+                        songLabel.setText(name);
+                    } else if(mouseEvent.getClickCount() == 2) {
+                        songLabel.setText(name);
+                        Controller.media = new Media(file.toURI().toString());
+                        Controller.mediaPlayer = new MediaPlayer(Controller.media);
+                        playMedia();
+                    }
+                }
+            }
+        });*/
+
+
+
     }
 
 
