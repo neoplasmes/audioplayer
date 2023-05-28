@@ -7,7 +7,7 @@ module com.example.auidoplayer {
     requires com.dlsc.formsfx;
     requires org.kordamp.ikonli.javafx;
     requires javafx.media;
-    requires json.simple;
+    requires org.json;
 
     opens com.example.auidoplayer to javafx.fxml;
     exports com.example.auidoplayer;

@@ -4,10 +4,10 @@
       "name": "default_1",
       "music": [
         {
-          "src": ""
+          "src": "music/creed.mp3"
         },
         {
-          "src": ""
+          "src": "music/darkangel.mp3"
         }
       ]
     },
@@ -15,10 +15,10 @@
       "name": "default_2",
       "music": [
         {
-          "src": ""
+          "src": "music/creed.mp3"
         },
         {
-          "src": ""
+          "src": "music/typecast.mp3"
         }
       ]
     }
