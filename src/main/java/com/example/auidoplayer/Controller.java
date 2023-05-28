@@ -3,6 +3,7 @@ package com.example.auidoplayer;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -20,13 +21,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
+import com.github.cliftonlabs.json_simple.*;
+
 
 public class Controller implements Initializable{
 
     @FXML
     private Pane pane;
     @FXML
-    private Label songLabel;
+    public Label songLabel;
     @FXML
     private Button playButton, pauseButton, resetButton, previousButton, nextButton;
     @FXML
@@ -85,10 +88,10 @@ public class Controller implements Initializable{
 
         songLabel.setText(songs.get(songNumber).getName());
 
-        for(int i = 0; i < speeds.length; i++) {
+        //for(int i = 0; i < speeds.length; i++) {
 
-            speedBox.getItems().add(Integer.toString(speeds[i])+"%");
-        }
+        //    speedBox.getItems().add(Integer.toString(speeds[i])+"%");
+        //}
 
         //speedBox.setOnAction(this::changeSpeed);
 
@@ -114,7 +117,7 @@ public class Controller implements Initializable{
     public void playMedia() {
 
         beginTimer();
-        changeSpeed(null);
+        //changeSpeed(null);
         mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
         mediaPlayer.play();
     }
@@ -264,7 +267,7 @@ public class Controller implements Initializable{
     }
 
     @FXML
-    private void onDragDroppedPlaylist(DragEvent event){
+    private void onDragDroppedPlaylist(DragEvent event) throws IOException {
         List<File> files = event.getDragboard().getFiles();
         List<Button> buttons = new ArrayList<>(); // дост.
         String pt_buttonID = "pt_button_";
@@ -273,17 +276,21 @@ public class Controller implements Initializable{
         for (File file : files) {
             i += 1;
 
-            String pathToMusic = file.getAbsolutePath();
+            String songName = file.getName();
             playTrackButton pt_button = new playTrackButton(file, pt_buttonID + Integer.toString(i));
 
             pt_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                        media = new Media(file.toURI().toString());
-                        mediaPlayer = new MediaPlayer(media);
-                        playMedia();
-
+                        if(mouseEvent.getClickCount() == 1) {
+                            songLabel.setText(songName);
+                        } else if(mouseEvent.getClickCount() == 2) {
+                            songLabel.setText(songName);
+                            media = new Media(file.toURI().toString());
+                            mediaPlayer = new MediaPlayer(media);
+                            playMedia();
+                        }
                     }
                 }
             });

@@ -1,0 +1,26 @@
+{
+  "playlists": [
+    {
+      "name": "default_1",
+      "music": [
+        {
+          "src": ""
+        },
+        {
+          "src": ""
+        }
+      ]
+    },
+    {
+      "name": "default_2",
+      "music": [
+        {
+          "src": ""
+        },
+        {
+          "src": ""
+        }
+      ]
+    }
+  ]
+}
