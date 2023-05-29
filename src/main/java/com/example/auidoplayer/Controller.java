@@ -3,6 +3,7 @@ package com.example.auidoplayer;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -33,7 +34,7 @@ import org.json.*;
 public class Controller implements Initializable{
 
     @FXML
-    private Pane pane;
+    private AnchorPane pane;
     @FXML
     public Label songLabel;
     @FXML
@@ -58,8 +59,15 @@ public class Controller implements Initializable{
     private ScrollPane playlistScroll;
     @FXML
     private FlowPane playlistPane;
+    @FXML
+    private Label playlistLabel;
+
+    public Button plusButton;
 
     private ArrayList<String> currentPlaylistMusic;
+
+    private JSONObject jsonObject;
+    private JSONArray playlists;
 
     private boolean player_isPlaying = false;
 
@@ -157,21 +165,24 @@ public class Controller implements Initializable{
             throw new RuntimeException(e);
         }
 
-        JSONObject jsonobj = new JSONObject(content);
+        jsonObject = new JSONObject(content);
 
-        JSONArray playlists = jsonobj.getJSONArray("playlists");
+        playlists = jsonObject.getJSONArray("playlists");
 
+
+        //что тут происходит я пока рот ебал писать
         for(int i = 0; i < playlists.length(); i++) {
             JSONObject this_object = playlists.getJSONObject(i);
+            String this_playlist_name = this_object.getString("name");
 
-            Button b = new Button(this_object.getString("name"));
+            Button b = new Button(this_playlist_name);
 
             JSONArray this_playlist_music_json = this_object.getJSONArray("music");
 
             ArrayList<String> this_playlist_music_paths = new ArrayList<String>();
 
             for (int j = 0; j < this_playlist_music_json.length(); j++) {
-                this_playlist_music_paths.add(this_playlist_music_json.getJSONObject(j).getString("src"));
+                this_playlist_music_paths.add(this_playlist_music_json.get(j).toString());
             }
 
             System.out.println(this_playlist_music_paths);
@@ -182,7 +193,7 @@ public class Controller implements Initializable{
 
                     try {
                         current_playlist.getChildren().clear();
-                        updateCurrentPlaylist(this_playlist_music_paths);
+                        updateCurrentPlaylist(this_playlist_music_paths, this_playlist_name);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -195,27 +206,112 @@ public class Controller implements Initializable{
         }
 
 
-        Button plusButton = new Button("+");
+        plusButton = new Button("+");
+        plusButton.setOnAction(event -> {
+            try {
+                addNewPlaylist_frontend();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         playlistPane.getChildren().add(plusButton);
         playlistPane.setMargin(plusButton, new Insets(40.0, 40.0,40.0,40.0));
 
 
     }
 
+    public void addNewPlaylist_frontend() throws IOException {
+        /*TextField tf = new TextField();
 
-    public void updateCurrentPlaylist(ArrayList<String> paths) throws IOException {
+        pane.getChildren().add(tf);
+
+        tf.setLayoutX(plusButton.getLayoutX() + 5.0);
+        tf.setLayoutY(plusButton.getLayoutY() + 5.0);*/
+
+        playlistPane.getChildren().remove(plusButton);
+        addNewPlaylist_backend();
+
+    }
+
+    //этот метод прост ради ржаки тут находится
+    private static JSONArray listNumberArray(int max){
+        JSONArray res = new JSONArray();
+        for (int i=0; i<max;i++) {
+            //The value of the labels must be an String in order to make it work
+            res.put(String.valueOf(i));
+        }
+        return res;
+    }
+
+
+    //здесь крч обновление JSON репрезентации плейлиста. внес в отдельный метод, т.к. скорее всего ещё где то отдельно понадобится
+    public void addNewPlaylist_backend() throws IOException {
+        /*StringBuilder write = new StringBuilder();
+        JSONWriter jsonWriter = new JSONWriter(write);
+        */
+        JSONObject new_playlist = new JSONObject();
+        System.out.println(playlists);
+        //имя нового плейлиста
+        new_playlist.put("name", "default");
+
+        //список музла в новом плейлисте
+        JSONArray new_music = new JSONArray();
+        new_music.put("music/kodacblack.wav");
+        new_music.put("music/lilpeep.wav");
+        new_music.put("music/waiting.wav");
+
+        //добавляем список в новы плейлист
+        new_playlist.put("music", new_music);
+
+        //добавляем новый плейлист в общий список плейлистов
+        playlists.put(new_playlist);
+
+        //обновляем файл с хуйнёй
+        System.out.println(playlists.toString());
+
+
+        JSONObject update = new JSONObject();
+        update.put("playlists", playlists);
+        updateJSON(update.toString());
+
+
+        //JSONArray list = listNumberArray(playlists.length());
+        //JSONObject object = playlists.toJSONObject(list);
+        //System.out.println("Final JSONOBject: " + object);
+
+    }
+
+
+    //метод чтобы обновить json файл ЕБУЧИЙ
+    public void updateJSON(String content) throws IOException {
+        File file = new File("playlists/playlists.JSON");
+        FileWriter fw = new FileWriter(file, false);
+
+        fw.write(content);
+        fw.close();
+    }
+
+    //обновление текущего листа который блять сбоку справа
+    //метод принимает список файлов музла и имя плейлиста который щас врубится
+    public void updateCurrentPlaylist(ArrayList<String> paths, String name) throws IOException {
         int id = 1;
         String pt_buttonID = "pt_button_";
+
+        playlistLabel.setText(name);
 
         System.out.println("1");
         System.out.println(paths);
 
+        //добавляем типо кнопки-треки в эту хуйню справа
         for (String path : paths) {
-
+            //переменная PATH содержит в себе трек, который сейчас привяжется к кнопке, которая будет его воспроизводить
             File m = new File(path);
 
             playTrackButton pt_button = new playTrackButton(m, pt_buttonID + Integer.toString(id));
 
+            //ебаный дубликат кода из строчек гораздо ниже, который я не знаю как не дублировать
+            //всё очевидно, тут просто у нас кнопка запускает трек, который к ней привязан
             pt_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -232,6 +328,7 @@ public class Controller implements Initializable{
                 }
             });
 
+            //гет чилдрен значит берём ребёнка и насил..... просто кнопку въёбываем в ъуйню справа
             current_playlist.getChildren().add(pt_button);
         }
     }

@@ -34,15 +34,24 @@
          </font>
       </Button>
       <Slider fx:id="volumeSlider" layoutX="512.0" layoutY="473.0" max="100.0" prefHeight="14.0" prefWidth="117.0" value="50.0" />
-      <ScrollPane fx:id="currentPlaylistScroll" layoutX="647.0" layoutY="5.0" prefHeight="513.0" prefWidth="309.0">
+      <ScrollPane fx:id="currentPlaylistScroll" layoutX="647.0" layoutY="52.0" prefHeight="437.0" prefWidth="309.0">
          <content>
-            <VBox fx:id="current_playlist" onDragDropped="#onDragDroppedPlaylist" onDragOver="#onDragOverPlaylist" prefHeight="505.0" prefWidth="285.0" style="-fx-background-color: #FFFFFF;" />
+            <VBox fx:id="current_playlist" onDragDropped="#onDragDroppedPlaylist" onDragOver="#onDragOverPlaylist" prefHeight="449.0" prefWidth="285.0" style="-fx-background-color: #FFFFFF;" />
          </content>
       </ScrollPane>
-      <ScrollPane fx:id="playlistScroll" layoutY="-3.0" prefHeight="350.0" prefWidth="650.0">
+      <ScrollPane fx:id="playlistScroll" layoutX="-6.0" layoutY="2.0" prefHeight="363.0" prefWidth="650.0">
          <content>
-            <FlowPane fx:id="playlistPane" prefHeight="348.0" prefWidth="647.0" />
+            <FlowPane fx:id="playlistPane" prefHeight="331.0" prefWidth="624.0" />
          </content>
       </ScrollPane>
+      <Button fx:id="ulpoadPlaylistButton" layoutX="897.0" layoutY="487.0" mnemonicParsing="false" text="Upload" />
+      <Button fx:id="clearPlaylistButton" layoutX="851.0" layoutY="488.0" mnemonicParsing="false" text="clear" />
+      <Button fx:id="savePlaylistButton" layoutX="806.0" layoutY="487.0" mnemonicParsing="false" text="save" />
+      <Label fx:id="playlistLabel" alignment="CENTER" layoutX="696.0" layoutY="8.0" prefHeight="35.0" prefWidth="167.0" text="Label" textFill="#00ff09">
+         <font>
+            <Font size="29.0" />
+         </font>
+      </Label>
+      <Button fx:id="freePlaylist" layoutX="733.0" layoutY="492.0" mnemonicParsing="false" text="free" />
    </children>
 </AnchorPane>
