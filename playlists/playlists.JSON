@@ -1,0 +1,18 @@
+{
+  "playlists": [
+    {
+      "name": "default_1",
+      "music": [
+        "music/creed.mp3",
+        "music/darkangel.mp3"
+      ]
+    },
+    {
+      "name": "default_2",
+      "music": [
+        "music/creed.mp3",
+        "music/typecast.mp3"
+      ]
+    }
+  ]
+}
