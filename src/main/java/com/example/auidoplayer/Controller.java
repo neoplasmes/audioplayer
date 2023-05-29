@@ -12,6 +12,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -45,8 +47,8 @@ public class Controller implements Initializable{
     private ScrollPane currentPlaylistScroll;
 
 
-    private Media media;
-    private MediaPlayer mediaPlayer;
+    protected Media media;
+    protected MediaPlayer mediaPlayer;
 
     private File directory;
     private File[] files;
@@ -65,30 +67,30 @@ public class Controller implements Initializable{
     public void initialize(URL arg0, ResourceBundle arg1) {
 
         songs = new ArrayList<File>();
-//
-//        directory = new File("music");
-//
-//        files = directory.listFiles();
-//
-//        if(files != null) {
-//
-//            for(File file : files) {
-//
-//                songs.add(file);
-//            }
-//        }
 
-//        media = new Media(songs.get(songNumber).toURI().toString());
-//        mediaPlayer = new MediaPlayer(media);
-//
-//        songLabel.setText(songs.get(songNumber).getName());
+        directory = new File("music");
+
+        files = directory.listFiles();
+
+        if(files != null) {
+
+            for(File file : files) {
+
+                songs.add(file);
+            }
+        }
+
+        media = new Media(songs.get(songNumber).toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
+
+        songLabel.setText(songs.get(songNumber).getName());
 
         for(int i = 0; i < speeds.length; i++) {
 
             speedBox.getItems().add(Integer.toString(speeds[i])+"%");
         }
 
-        speedBox.setOnAction(this::changeSpeed);
+        //speedBox.setOnAction(this::changeSpeed);
 
         volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
@@ -253,7 +255,7 @@ public class Controller implements Initializable{
 
 
     @FXML
-    private void onDragOverCurrent(DragEvent event){
+    private void onDragOverPlaylist(DragEvent event){
         List<File> files = event.getDragboard().getFiles();
 
         if(files != null && !files.isEmpty()) {
@@ -262,34 +264,31 @@ public class Controller implements Initializable{
     }
 
     @FXML
-    private void onDragDroppedCurrent(DragEvent event){
+    private void onDragDroppedPlaylist(DragEvent event){
         List<File> files = event.getDragboard().getFiles();
         List<Button> buttons = new ArrayList<>(); // дост.
-        Integer buttonID = 0;
+        String pt_buttonID = "pt_button_";
+        int i = 0;
 
         for (File file : files) {
-            buttonID += 1;
-            String pathToMusic = file.getAbsolutePath();
-            Button newButton = new Button(file.getName());
-            current_playlist.getChildren().add(newButton);
-            newButton.setId((buttonID.toString())); // дост. сделали id каждой кнопке
-            songs.add(file);
-            newButton.setOnAction(new EventHandler<ActionEvent>() {
+            i += 1;
 
+            String pathToMusic = file.getAbsolutePath();
+            playTrackButton pt_button = new playTrackButton(file, pt_buttonID + Integer.toString(i));
+
+            pt_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
-                public void handle(ActionEvent event) {
-                    try {
-                        pauseMedia();
-                    } catch (Exception e){
+                public void handle(MouseEvent mouseEvent) {
+                    if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+                        media = new Media(file.toURI().toString());
+                        mediaPlayer = new MediaPlayer(media);
+                        playMedia();
 
                     }
-                    media = new Media(file.toURI().toString());
-                    mediaPlayer = new MediaPlayer(media);
-                    songLabel.setText(songs.get(songNumber).getName());
-                    playMedia();
                 }
             });
-            System.out.println(newButton);
+
+            current_playlist.getChildren().add(pt_button);
         }
 
     }
