@@ -62,6 +62,11 @@ public class Controller implements Initializable{
     @FXML
     private Label playlistLabel;
 
+    @FXML
+    private Button savePlaylistButton;
+
+    private int current_playlist_id;
+
     public Button plusButton;
 
     private ArrayList<String> currentPlaylistMusic;
@@ -94,9 +99,9 @@ public class Controller implements Initializable{
 
 
 
+        currentPlaylistMusic = new ArrayList<>();
 
-
-        songs = new ArrayList<File>();
+        songs = new ArrayList<>();
 
         directory = new File("music");
 
@@ -173,36 +178,11 @@ public class Controller implements Initializable{
         //что тут происходит я пока рот ебал писать
         for(int i = 0; i < playlists.length(); i++) {
             JSONObject this_object = playlists.getJSONObject(i);
-            String this_playlist_name = this_object.getString("name");
-
-            Button b = new Button(this_playlist_name);
-
-            JSONArray this_playlist_music_json = this_object.getJSONArray("music");
-
-            ArrayList<String> this_playlist_music_paths = new ArrayList<String>();
-
-            for (int j = 0; j < this_playlist_music_json.length(); j++) {
-                this_playlist_music_paths.add(this_playlist_music_json.get(j).toString());
+            try {
+                addNewPlaylist_frontend(this_object, i);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-
-            System.out.println(this_playlist_music_paths);
-
-            b.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-
-                    try {
-                        current_playlist.getChildren().clear();
-                        updateCurrentPlaylist(this_playlist_music_paths, this_playlist_name);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-
-                }
-            });
-
-            playlistPane.getChildren().add(b);
-            playlistPane.setMargin(b, new Insets(40.0, 40.0,40.0,40.0));
         }
 
 
@@ -221,7 +201,10 @@ public class Controller implements Initializable{
 
     }
 
-    public void addNewPlaylist_frontend() throws IOException {
+
+
+
+    public void addNewPlaylist_frontend(JSONObject js_obj, int id) throws IOException {
         /*TextField tf = new TextField();
 
         pane.getChildren().add(tf);
@@ -229,10 +212,76 @@ public class Controller implements Initializable{
         tf.setLayoutX(plusButton.getLayoutX() + 5.0);
         tf.setLayoutY(plusButton.getLayoutY() + 5.0);*/
 
-        playlistPane.getChildren().remove(plusButton);
-        addNewPlaylist_backend();
+
+
+        //playlistPane.getChildren().remove(plusButton);
+        //addNewPlaylist_backend();
+
+        //имя плейлиста который щас прикрепится
+        String this_playlist_name = js_obj.getString("name");
+
+        //ноде к которому ща будет прикреплён плейлист
+        Button b = new Button(this_playlist_name);
+
+        //список музыки который ща прикрепится
+        JSONArray this_playlist_music_json = js_obj.getJSONArray("music");
+
+        //Репрезентация строчки выше в string
+        ArrayList<String> this_playlist_music_paths = new ArrayList<String>();
+
+        for (int j = 0; j < this_playlist_music_json.length(); j++) {
+            this_playlist_music_paths.add(this_playlist_music_json.get(j).toString());
+        }
+        //конец репрезентации
+
+        //System.out.println(this_playlist_music_paths);
+
+        //добавляем обновление плейлиста на кнопку
+        b.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+
+                try {
+                    current_playlist.getChildren().clear();
+                    updateCurrentPlaylist(this_playlist_music_paths, this_playlist_name, id);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        });
+
+        playlistPane.getChildren().add(b);
+        playlistPane.setMargin(b, new Insets(40.0, 40.0,40.0,40.0));
+
+
+        //Button b = new Button();
 
     }
+
+    //перегрузка для кнопки ПЛЮС
+    public void addNewPlaylist_frontend() throws IOException {
+
+        addNewPlaylist_backend();
+
+        playlistPane.getChildren().remove(plusButton);
+
+        addNewPlaylist_frontend(playlists.getJSONObject(playlists.length() - 1), playlists.length() - 1);
+
+        //возвращаем кнопку ПЛЮС
+        plusButton = new Button("+");
+        plusButton.setOnAction(event -> {
+            try {
+                addNewPlaylist_frontend();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        playlistPane.getChildren().add(plusButton);
+        playlistPane.setMargin(plusButton, new Insets(40.0, 40.0,40.0,40.0));
+    }
+
 
     //этот метод прост ради ржаки тут находится
     private static JSONArray listNumberArray(int max){
@@ -255,7 +304,7 @@ public class Controller implements Initializable{
         //имя нового плейлиста
         new_playlist.put("name", "default");
 
-        //список музла в новом плейлисте
+        //список музла в новом плейлисте, нужно добавить нормальное добавление
         JSONArray new_music = new JSONArray();
         new_music.put("music/kodacblack.wav");
         new_music.put("music/lilpeep.wav");
@@ -271,9 +320,8 @@ public class Controller implements Initializable{
         System.out.println(playlists.toString());
 
 
-        JSONObject update = new JSONObject();
-        update.put("playlists", playlists);
-        updateJSON(update.toString());
+
+        updateJSON(playlists);
 
 
         //JSONArray list = listNumberArray(playlists.length());
@@ -284,17 +332,20 @@ public class Controller implements Initializable{
 
 
     //метод чтобы обновить json файл ЕБУЧИЙ
-    public void updateJSON(String content) throws IOException {
+    public void updateJSON(JSONArray content) throws IOException {
+        JSONObject update = new JSONObject();
+        update.put("playlists", content);
+
         File file = new File("playlists/playlists.JSON");
         FileWriter fw = new FileWriter(file, false);
 
-        fw.write(content);
+        fw.write(update.toString());
         fw.close();
     }
 
     //обновление текущего листа который блять сбоку справа
     //метод принимает список файлов музла и имя плейлиста который щас врубится
-    public void updateCurrentPlaylist(ArrayList<String> paths, String name) throws IOException {
+    public void updateCurrentPlaylist(ArrayList<String> paths, String name, int playlist_id) throws IOException {
         int id = 1;
         String pt_buttonID = "pt_button_";
 
@@ -302,6 +353,10 @@ public class Controller implements Initializable{
 
         System.out.println("1");
         System.out.println(paths);
+
+        currentPlaylistMusic = paths;
+        current_playlist_id = playlist_id;
+
 
         //добавляем типо кнопки-треки в эту хуйню справа
         for (String path : paths) {
@@ -333,6 +388,34 @@ public class Controller implements Initializable{
         }
     }
 
+
+    public void savePlaylist() throws IOException {
+        //условие - временное устранение бага
+        if (!playlistLabel.getText().equals("Label")){
+            //получаем текущий плейлист
+            JSONObject obj = playlists.getJSONObject(current_playlist_id);
+            JSONArray arr = new JSONArray(currentPlaylistMusic);
+            obj.put("music", arr);
+
+            JSONArray buffer = new JSONArray();
+
+            for (int i = 0; i < playlists.length(); i++) {
+                if (i == current_playlist_id){
+                    buffer.put(obj);
+                } else {buffer.put(playlists.getJSONObject(i));}
+            }
+
+            System.out.println(buffer);
+
+            updateJSON(buffer);
+
+            playlists = buffer;
+            System.out.println(playlists);
+
+        }
+    }
+
+
     public void playMedia() {
         if (!player_isPlaying){
             player_isPlaying = true;
@@ -347,7 +430,6 @@ public class Controller implements Initializable{
             playButton.setText("play");
             pauseMedia();
         }
-
     }
 
     public void pauseMedia() {
@@ -511,8 +593,10 @@ public class Controller implements Initializable{
         for (File file : files) {
             i += 1;
 
+            currentPlaylistMusic.add(file.getAbsolutePath());
+
             String songName = file.getName();
-            playTrackButton pt_button = new playTrackButton(file, pt_buttonID + Integer.toString(i));
+            playTrackButton pt_button = new playTrackButton(file, pt_buttonID + i);
 
             pt_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override

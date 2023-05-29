@@ -18,7 +18,7 @@
          </font>
       </Label>
       <ProgressBar fx:id="songProgressBar" layoutX="8.0" layoutY="419.0" prefHeight="18.0" prefWidth="623.0" progress="0.0" />
-      <Button fx:id="playButton" layoutX="282.0" layoutY="457.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="84.0" text="PLAY">
+      <Button fx:id="playButton" layoutX="282.0" layoutY="457.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="46.0" prefWidth="84.0" text="PLAY">
          <font>
             <Font size="18.0" />
          </font>
@@ -46,7 +46,7 @@
       </ScrollPane>
       <Button fx:id="ulpoadPlaylistButton" layoutX="897.0" layoutY="487.0" mnemonicParsing="false" text="Upload" />
       <Button fx:id="clearPlaylistButton" layoutX="851.0" layoutY="488.0" mnemonicParsing="false" text="clear" />
-      <Button fx:id="savePlaylistButton" layoutX="806.0" layoutY="487.0" mnemonicParsing="false" text="save" />
+      <Button fx:id="savePlaylistButton" layoutX="806.0" layoutY="487.0" mnemonicParsing="false" onAction="#savePlaylist" text="save" />
       <Label fx:id="playlistLabel" alignment="CENTER" layoutX="696.0" layoutY="8.0" prefHeight="35.0" prefWidth="167.0" text="Label" textFill="#00ff09">
          <font>
             <Font size="29.0" />
