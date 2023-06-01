@@ -36,9 +36,11 @@ public class Controller implements Initializable{
     @FXML
     private AnchorPane pane;
     @FXML
+    private TextField changeLabelName;
+    @FXML
     public Label songLabel;
     @FXML
-    private Button playButton, pauseButton, resetButton, previousButton, nextButton;
+    private Button playButton, pauseButton, resetButton, previousButton, nextButton, saveNameButton;
     @FXML
     private ComboBox<String> speedBox;
     @FXML
@@ -343,6 +345,19 @@ public class Controller implements Initializable{
         fw.close();
     }
 
+
+    public void setLabelName(){
+        String labelName = "obama";
+        Scanner s = new Scanner(System.in);
+        labelName = s.next();
+
+    }
+    public void changeLabelName(){ // тут крч меняется имя плейлиста
+        playlistLabel.setText(changeLabelName.getText());
+        changeLabelName.setVisible(false);
+        saveNameButton.setVisible(false);
+        playlistLabel.setVisible(true);
+    }
     //Обновление текущего листа, находящегося сбоку справа
     //Метод принимает список файлов, музыки и имя плейлиста, который сейчас врубится
     public void updateCurrentPlaylist(ArrayList<String> paths, String name, int playlist_id) throws IOException {
@@ -350,6 +365,19 @@ public class Controller implements Initializable{
         String pt_buttonID = "pt_button_";
 
         playlistLabel.setText(name);
+        playlistLabel.setOnMouseClicked(new EventHandler<MouseEvent>() { // два раза кликни по названию плейлиста и смени название!!!!
+
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+                    if(mouseEvent.getClickCount() == 2) {
+                        changeLabelName.setVisible(true);
+                        saveNameButton.setVisible(true);
+                        playlistLabel.setVisible(false);
+                    }
+                }
+            }
+        });
 
         System.out.println("1");
         System.out.println(paths);
