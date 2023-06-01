@@ -3,12 +3,11 @@ package com.example.auidoplayer;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-import java.io.*;
+import java.io.File;
 
 public class playTrackButton extends Label {
 
@@ -16,7 +15,7 @@ public class playTrackButton extends Label {
     protected String name;
     protected String artist;
 
-    public playTrackButton(File file, String id) throws IOException {
+    public playTrackButton(File file, String id){
         path = file.getAbsolutePath();
 
         name = file.getName();
@@ -26,39 +25,7 @@ public class playTrackButton extends Label {
         super.setText(path + "\n" + name);
         super.setId(id);
         super.setMinHeight(50);
-        super.setStyle("-fx-background-color: #BCCCA1; -fx-border-color: #000000");
-
-        super.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                playTrackButton.super.setStyle("-fx-background-color: #DCF0BD; -fx-border-color: #000000");
-            }
-        });
-
-        super.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                playTrackButton.super.setStyle("-fx-background-color: #BCCCA1; -fx-border-color: #000000");
-            }
-        });
-
-        /*super.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                    if(mouseEvent.getClickCount() == 1) {
-                        songLabel.setText(name);
-                    } else if(mouseEvent.getClickCount() == 2) {
-                        songLabel.setText(name);
-                        Controller.media = new Media(file.toURI().toString());
-                        Controller.mediaPlayer = new MediaPlayer(Controller.media);
-                        playMedia();
-                    }
-                }
-            }
-        });*/
-
-
+        super.setStyle("-fx-border-color: #000000");
 
     }
 

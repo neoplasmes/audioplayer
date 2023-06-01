@@ -424,10 +424,10 @@ public class Controller implements Initializable{
             mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
             mediaPlayer.play();
 
-            playButton.setText("pause");
+            playButton.setText("⏸");
         } else {
             player_isPlaying = false;
-            playButton.setText("play");
+            playButton.setText("▶");
             pauseMedia();
         }
     }
@@ -605,6 +605,11 @@ public class Controller implements Initializable{
                         if(mouseEvent.getClickCount() == 1) {
                             songLabel.setText(songName);
                         } else if(mouseEvent.getClickCount() == 2) {
+                            try {
+                                cancelTimer();
+                                mediaPlayer.pause();
+                            } catch (Exception e){
+                            }
                             songLabel.setText(songName);
                             media = new Media(file.toURI().toString());
                             mediaPlayer = new MediaPlayer(media);
@@ -618,7 +623,9 @@ public class Controller implements Initializable{
         }
 
     }
+    public void deleteSong (ActionEvent event){
 
+    }
 
 
 }

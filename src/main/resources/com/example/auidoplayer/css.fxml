@@ -12,46 +12,59 @@
 
 <AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="517.0" prefWidth="959.0" style="-fx-background-color: #222222;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auidoplayer.Controller">
    <children>
-      <Label fx:id="songLabel" alignment="CENTER" layoutX="20.0" layoutY="338.0" prefHeight="100.0" prefWidth="655.0" text="MP3 Player&#10;" textFill="#00ff1a">
+      <Label fx:id="songLabel" alignment="CENTER" layoutX="8.0" layoutY="344.0" prefHeight="93.0" prefWidth="623.0" text="MP3 Player&#10;" textFill="#ffbc00">
          <font>
-            <Font size="65.0" />
+            <Font name="System Bold" size="41.0" />
          </font>
       </Label>
       <ProgressBar fx:id="songProgressBar" layoutX="8.0" layoutY="419.0" prefHeight="18.0" prefWidth="623.0" progress="0.0" />
-      <Button fx:id="playButton" layoutX="282.0" layoutY="457.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="46.0" prefWidth="84.0" text="PLAY">
+      <Button fx:id="playButton" layoutX="291.0" layoutY="457.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="46.0" prefWidth="57.0" style="-fx-background-color: #ffbc00;" text="▶" textFill="WHITE">
          <font>
-            <Font size="18.0" />
+            <Font name="System Bold" size="22.0" />
          </font>
       </Button>
-      <Button fx:id="previousButton" layoutX="186.0" layoutY="454.0" mnemonicParsing="false" onAction="#previousMedia" prefHeight="46.0" prefWidth="85.0" text="PREVIOUS">
+      <Button fx:id="previousButton" layoutX="226.0" layoutY="457.0" mnemonicParsing="false" onAction="#previousMedia" prefHeight="46.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="◀◀" textFill="WHITE">
          <font>
-            <Font size="13.0" />
+            <Font size="21.0" />
          </font>
       </Button>
-      <Button fx:id="nextButton" layoutX="378.0" layoutY="459.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="46.0" prefWidth="85.0" text="NEXT">
+      <Button fx:id="nextButton" layoutX="358.0" layoutY="457.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="46.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="▶▶" textFill="WHITE">
          <font>
-            <Font size="13.0" />
+            <Font name="System Bold" size="21.0" />
          </font>
       </Button>
-      <Slider fx:id="volumeSlider" layoutX="512.0" layoutY="473.0" max="100.0" prefHeight="14.0" prefWidth="117.0" value="50.0" />
-      <ScrollPane fx:id="currentPlaylistScroll" layoutX="647.0" layoutY="52.0" prefHeight="437.0" prefWidth="309.0">
+      <Slider fx:id="volumeSlider" layoutX="496.0" layoutY="473.0" max="100.0" prefHeight="14.0" prefWidth="117.0" value="50.0" />
+      <ScrollPane fx:id="currentPlaylistScroll" layoutX="647.0" layoutY="52.0" prefHeight="386.0" prefWidth="309.0">
          <content>
-            <VBox fx:id="current_playlist" onDragDropped="#onDragDroppedPlaylist" onDragOver="#onDragOverPlaylist" prefHeight="449.0" prefWidth="285.0" style="-fx-background-color: #FFFFFF;" />
+            <VBox fx:id="current_playlist" onDragDropped="#onDragDroppedPlaylist" onDragOver="#onDragOverPlaylist" prefHeight="384.0" prefWidth="285.0" style="-fx-background-color: #FFFFFF;" />
          </content>
       </ScrollPane>
       <ScrollPane fx:id="playlistScroll" layoutX="-6.0" layoutY="2.0" prefHeight="363.0" prefWidth="650.0">
          <content>
-            <FlowPane fx:id="playlistPane" prefHeight="331.0" prefWidth="624.0" />
+            <FlowPane fx:id="playlistPane" prefHeight="362.0" prefWidth="635.0" />
          </content>
       </ScrollPane>
-      <Button fx:id="ulpoadPlaylistButton" layoutX="897.0" layoutY="487.0" mnemonicParsing="false" text="Upload" />
-      <Button fx:id="clearPlaylistButton" layoutX="851.0" layoutY="488.0" mnemonicParsing="false" text="clear" />
-      <Button fx:id="savePlaylistButton" layoutX="806.0" layoutY="487.0" mnemonicParsing="false" onAction="#savePlaylist" text="save" />
-      <Label fx:id="playlistLabel" alignment="CENTER" layoutX="696.0" layoutY="8.0" prefHeight="35.0" prefWidth="167.0" text="Label" textFill="#00ff09">
+      <Button fx:id="ulpoadPlaylistButton" layoutX="867.0" layoutY="468.0" mnemonicParsing="false" style="-fx-background-color: #ffbc00;" text="Upload">
          <font>
-            <Font size="29.0" />
+            <Font name="System Bold" size="12.0" />
+         </font></Button>
+      <Button fx:id="clearPlaylistButton" layoutX="804.0" layoutY="468.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="Clear">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Button>
+      <Button fx:id="savePlaylistButton" layoutX="743.0" layoutY="468.0" mnemonicParsing="false" onAction="#savePlaylist" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="Save">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font></Button>
+      <Label fx:id="playlistLabel" alignment="CENTER" layoutX="718.0" layoutY="2.0" prefHeight="35.0" prefWidth="167.0" text="Name" textFill="#ffbc00">
+         <font>
+            <Font name="System Bold" size="34.0" />
          </font>
       </Label>
-      <Button fx:id="freePlaylist" layoutX="733.0" layoutY="492.0" mnemonicParsing="false" text="free" />
+      <Button fx:id="freePlaylist" layoutX="680.0" layoutY="468.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="Free">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
