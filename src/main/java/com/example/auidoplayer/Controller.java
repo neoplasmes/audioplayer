@@ -346,13 +346,19 @@ public class Controller implements Initializable{
     }
 
 
-    public void setLabelName(){
-        String labelName = "obama";
-        Scanner s = new Scanner(System.in);
-        labelName = s.next();
 
+
+    public void clickPlaylistName (MouseEvent event){ // кликнешь 2 раза - поменяешь название плейлиста
+        if(event.getButton().equals(MouseButton.PRIMARY)){
+            if(event.getClickCount() == 2) {
+                changeLabelName.setVisible(true);
+                saveNameButton.setVisible(true);
+                playlistLabel.setVisible(false);
+            }
+        }
     }
-    public void changeLabelName(){ // тут крч меняется имя плейлиста
+
+    public void changePlaylistName(){ // тут крч меняется имя плейлиста
         playlistLabel.setText(changeLabelName.getText());
         changeLabelName.setVisible(false);
         saveNameButton.setVisible(false);
@@ -365,19 +371,6 @@ public class Controller implements Initializable{
         String pt_buttonID = "pt_button_";
 
         playlistLabel.setText(name);
-        playlistLabel.setOnMouseClicked(new EventHandler<MouseEvent>() { // два раза кликни по названию плейлиста и смени название!!!!
-
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                    if(mouseEvent.getClickCount() == 2) {
-                        changeLabelName.setVisible(true);
-                        saveNameButton.setVisible(true);
-                        playlistLabel.setVisible(false);
-                    }
-                }
-            }
-        });
 
         System.out.println("1");
         System.out.println(paths);
@@ -612,7 +605,6 @@ public class Controller implements Initializable{
 
 
 
-
         List<File> files = event.getDragboard().getFiles();
         List<Button> buttons = new ArrayList<>(); // дост.
         String pt_buttonID = "pt_button_";
@@ -632,6 +624,7 @@ public class Controller implements Initializable{
                     if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
                         if(mouseEvent.getClickCount() == 1) {
                             songLabel.setText(songName);
+
                         } else if(mouseEvent.getClickCount() == 2) {
                             try {
                                 cancelTimer();
@@ -652,7 +645,14 @@ public class Controller implements Initializable{
 
     }
     public void deleteSong (ActionEvent event){
-
+        for (int i = 0; i<files.length; i++){
+            System.out.println(files[i].getName());
+            System.out.println(songLabel.getText());
+            if (files[i].getName().equals((songLabel.getText().split("/"))[1])) {
+                current_playlist.getChildren().remove(i);
+                break;
+            }
+        }
     }
 
 

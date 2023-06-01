@@ -22,7 +22,7 @@ public class playTrackButton extends Label {
 
 
         //стиль
-        super.setText(path + "\n" + name);
+        super.setText(name);
         super.setId(id);
         super.setMinHeight(50);
         super.setStyle("-fx-border-color: #000000");
