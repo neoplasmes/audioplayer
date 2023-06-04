@@ -46,15 +46,15 @@
             <FlowPane fx:id="playlistPane" prefHeight="362.0" prefWidth="635.0" />
          </content>
       </ScrollPane>
-      <Button fx:id="ulpoadPlaylistButton" layoutX="867.0" layoutY="468.0" mnemonicParsing="false" style="-fx-background-color: #ffbc00;" text="Upload">
+      <Button fx:id="ulpoadPlaylistButton" layoutX="879.0" layoutY="466.0" mnemonicParsing="false" onAction="#onUploadButton" style="-fx-background-color: #ffbc00;" text="Upload">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
-      <Button fx:id="clearPlaylistButton" layoutX="804.0" layoutY="468.0" mnemonicParsing="false" onAction="#clearPlaylist" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="Clear">
+      <Button fx:id="clearPlaylistButton" layoutX="761.0" layoutY="467.0" mnemonicParsing="false" onAction="#clearPlaylist" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="Clear">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
-      <Button fx:id="savePlaylistButton" layoutX="743.0" layoutY="468.0" mnemonicParsing="false" onAction="#savePlaylist" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="Save">
+      <Button fx:id="savePlaylistButton" layoutX="695.0" layoutY="466.0" mnemonicParsing="false" onAction="#savePlaylist" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="Save">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
@@ -63,12 +63,17 @@
             <Font name="System Bold" size="34.0" />
          </font>
       </Label>
-      <Button fx:id="freePlaylist" layoutX="680.0" layoutY="468.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="Free">
+      <Button fx:id="freePlaylist" layoutX="631.0" layoutY="466.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="Free">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
       <Button fx:id="saveNameButton" layoutX="924.0" layoutY="15.0" mnemonicParsing="false" onAction="#changePlaylistName" prefHeight="25.0" prefWidth="22.0" style="-fx-background-color: #ffbc00;" text="S" visible="false">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
+      <Button fx:id="addButton" layoutX="827.0" layoutY="466.0" mnemonicParsing="false" onAction="#onAddTrackButton" style="-fx-background-color: #ffbc00;" text="Add">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>

@@ -28,6 +28,8 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import org.json.*;
 
@@ -54,6 +56,8 @@ public class Controller implements Initializable{
 
     //Моё
     @FXML
+    private Button addButton;
+    @FXML
     private VBox current_playlist;
     @FXML
     private ScrollPane currentPlaylistScroll;
@@ -78,6 +82,7 @@ public class Controller implements Initializable{
 
     private boolean player_isPlaying = false;
 
+    private int next_pt_id = 0;
     //Конец моего
 
     protected static Media media;
@@ -354,7 +359,6 @@ public class Controller implements Initializable{
     //Обновление текущего листа, находящегося сбоку справа
     //Метод принимает список файлов, музыки и имя плейлиста, который сейчас врубится
     public void updateCurrentPlaylist(ArrayList<String> paths, String name, int playlist_id) throws IOException {
-        int id = 0;
         String pt_buttonID = "pt_button_";
 
         playlistLabel.setText(name);
@@ -365,58 +369,14 @@ public class Controller implements Initializable{
         currentPlaylistMusic = paths;
         current_playlist_id = playlist_id;
 
+        List<File> files = new ArrayList<>();
 
-        //Добавляем справа а-ля кнопки-треки
         for (String path : paths) {
-            //Переменная PATH содержит в себе трек, который сейчас привяжется к кнопке, которая будет его воспроизводить
-            File m = new File(path);
-
-            playTrackButton pt_button = new playTrackButton(m, pt_buttonID + Integer.toString(id));
-
-            //Это дубликат кода из строчек гораздо ниже, который я не знаю как не дублировать
-            //Здесь просто кнопка запускает трек, который к ней привязан
-            pt_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                        if(mouseEvent.getClickCount() == 1) {
-                            try {
-                                cancelTimer();
-                                songProgressBar.setProgress(0.0);
-
-                                player_isPlaying = false;
-                                playButton.setText("▶");
-
-                                mediaPlayer.pause();
-                            } catch (Exception e){}
-
-                            songNumber = Integer.parseInt(pt_button.getId().split("_")[2]);
-                            songLabel.setText(m.getName());
-
-                            media = new Media(m.toURI().toString());
-                            mediaPlayer = new MediaPlayer(media);
-                        } else if(mouseEvent.getClickCount() == 2) {
-                            try {
-                                cancelTimer();
-                                mediaPlayer.pause();
-                            } catch (Exception e){}
-
-                            songNumber = Integer.parseInt(pt_button.getId().split("_")[2]);
-                            songLabel.setText(m.getName());
-
-                            media = new Media(m.toURI().toString());
-                            mediaPlayer = new MediaPlayer(media);
-                            playMedia();
-                        }
-                    }
-                }
-            });
-
-            //Добавляем кнопку справа
-            current_playlist.getChildren().add(pt_button);
-            //увеличиваем ид на 1
-            id += 1;
+            files.add(new File(path));
         }
+
+        next_pt_id = 0;
+        uploadTracks(files);
     }
 
 
@@ -488,6 +448,7 @@ public class Controller implements Initializable{
         if(currentPlaylistMusic.size() > 0 && !(mediaPlayer == null)) {
 
             if (mediaPlayer.getCurrentTime().toSeconds() <= 5.0){
+                songProgressBar.setProgress(0);
                 if (songNumber > 0) {
 
                     songNumber--;
@@ -545,6 +506,7 @@ public class Controller implements Initializable{
 
     public void nextMedia() {
         if(currentPlaylistMusic.size() > 0 && !(mediaPlayer == null)) {
+            songProgressBar.setProgress(0);
             if (songNumber < currentPlaylistMusic.size() - 1) {
 
                 songNumber++;
@@ -651,20 +613,78 @@ public class Controller implements Initializable{
     @FXML
     private void onDragDroppedPlaylist(DragEvent event) throws IOException {
 
-
-
         List<File> files = event.getDragboard().getFiles();
-        List<Button> buttons = new ArrayList<>(); // дост.
+
+        uploadTracks(files);
+
+    }
+    public void deleteSong (ActionEvent event){
+        for (int i = 0; i<files.length; i++){
+            System.out.println(files[i].getName());
+            System.out.println(songLabel.getText());
+            if (files[i].getName().equals((songLabel.getText().split("/"))[1])) {
+                current_playlist.getChildren().remove(i);
+                break;
+            }
+        }
+    }
+
+    public void clearPlaylist() {
+        next_pt_id = 0;
+
+        current_playlist.getChildren().clear();
+    }
+
+
+    public void onAddTrackButton() {
+        try {
+        FileChooser fileChooser = new FileChooser();
+        List<File> files = fileChooser.showOpenMultipleDialog(pane.getScene().getWindow());
+
+        uploadTracks(files);
+        } catch (Exception e) {}
+    }
+
+
+    public void onUploadButton() {
+        try {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            File dir = directoryChooser.showDialog(pane.getScene().getWindow());
+
+            playlistLabel.setText(dir.getName());
+
+            List<File> files = new ArrayList<>();
+            for (File file : dir.listFiles()){
+                files.add(file);
+            }
+            current_playlist.getChildren().clear();
+            uploadTracks(files);
+        } catch (Exception e) {}
+    }
+
+
+
+    public void uploadTracks(List<File> files){
+
         String pt_buttonID = "pt_button_";
-        int id = 0;
 
-        for (File file : files) {
+        int k = 0;
 
+        while(k < files.size()) {
+            File file = files.get(k);
+
+            if (file.isDirectory()) {
+                for(File f : file.listFiles()){
+                    files.add(f);
+                }
+                k += 1;
+                continue;
+            }
 
             currentPlaylistMusic.add(file.getAbsolutePath());
 
             String songName = file.getName();
-            playTrackButton pt_button = new playTrackButton(file, pt_buttonID + id);
+            playTrackButton pt_button = new playTrackButton(file, pt_buttonID + next_pt_id);
 
             pt_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
@@ -705,24 +725,11 @@ public class Controller implements Initializable{
                 }
             });
 
+            k += 1;
             current_playlist.getChildren().add(pt_button);
-            id += 1;
+            next_pt_id += 1;
         }
 
-    }
-    public void deleteSong (ActionEvent event){
-        for (int i = 0; i<files.length; i++){
-            System.out.println(files[i].getName());
-            System.out.println(songLabel.getText());
-            if (files[i].getName().equals((songLabel.getText().split("/"))[1])) {
-                current_playlist.getChildren().remove(i);
-                break;
-            }
-        }
-    }
-
-    public void clearPlaylist() {
-        current_playlist.getChildren().clear();
     }
 
 
