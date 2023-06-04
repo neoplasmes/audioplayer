@@ -486,53 +486,59 @@ public class Controller implements Initializable{
 
     public void previousMedia() {
         if(currentPlaylistMusic.size() > 0 && !(mediaPlayer == null)) {
-            if (songNumber > 0) {
 
-                songNumber--;
+            if (mediaPlayer.getCurrentTime().toSeconds() <= 5.0){
+                if (songNumber > 0) {
 
-                if(player_isPlaying) {
-                    mediaPlayer.stop();
-                }
+                    songNumber--;
 
-                if (running) {
-                    cancelTimer();
-                }
+                    if(player_isPlaying) {
+                        mediaPlayer.stop();
+                    }
 
-                File f = new File(currentPlaylistMusic.get(songNumber));
+                    if (running) {
+                        cancelTimer();
+                    }
 
-                media = new Media(f.toURI().toString());
-                mediaPlayer = new MediaPlayer(media);
+                    File f = new File(currentPlaylistMusic.get(songNumber));
 
-                songLabel.setText(f.getName());
+                    media = new Media(f.toURI().toString());
+                    mediaPlayer = new MediaPlayer(media);
 
-                System.out.println(player_isPlaying);
+                    songLabel.setText(f.getName());
 
-                if(player_isPlaying) {
-                    playMedia(2);
+                    System.out.println(player_isPlaying);
+
+                    if(player_isPlaying) {
+                        playMedia(2);
+                    }
+                } else {
+
+                    songNumber = currentPlaylistMusic.size() - 1;
+
+                    if(player_isPlaying) {
+                        mediaPlayer.stop();
+                    }
+
+                    if (running) {
+
+                        cancelTimer();
+                    }
+
+                    File f = new File(currentPlaylistMusic.get(songNumber));
+
+                    media = new Media(f.toURI().toString());
+                    mediaPlayer = new MediaPlayer(media);
+
+                    songLabel.setText(f.getName());
+
+                    if(player_isPlaying) {
+                        playMedia(2);
+                    }
                 }
             } else {
-
-                songNumber = currentPlaylistMusic.size() - 1;
-
-                if(player_isPlaying) {
-                    mediaPlayer.stop();
-                }
-
-                if (running) {
-
-                    cancelTimer();
-                }
-
-                File f = new File(currentPlaylistMusic.get(songNumber));
-
-                media = new Media(f.toURI().toString());
-                mediaPlayer = new MediaPlayer(media);
-
-                songLabel.setText(f.getName());
-
-                if(player_isPlaying) {
-                    playMedia(2);
-                }
+                songProgressBar.setProgress(0);
+                mediaPlayer.seek(Duration.seconds(0));
             }
         }
     }
@@ -713,6 +719,10 @@ public class Controller implements Initializable{
                 break;
             }
         }
+    }
+
+    public void clearPlaylist() {
+        current_playlist.getChildren().clear();
     }
 
 
