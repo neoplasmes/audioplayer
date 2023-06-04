@@ -429,7 +429,7 @@ public class Controller implements Initializable{
 
 
     public void playMedia() {
-        if (currentPlaylistMusic.size() > 0) {
+        if (currentPlaylistMusic.size() > 0 && !(mediaPlayer == null)) {
             if (!player_isPlaying) {
                 player_isPlaying = true;
                 beginTimer();
@@ -448,9 +448,9 @@ public class Controller implements Initializable{
 
     //перегрузка для кнопок переключения трека
     public void playMedia(int mode) {
-        if (currentPlaylistMusic.size() > 0) {
+        if (currentPlaylistMusic.size() > 0 && !(mediaPlayer == null)) {
             beginTimer();
-            playMedia();
+            mediaPlayer.play();
         }
     }
 
@@ -466,7 +466,7 @@ public class Controller implements Initializable{
     }
 
     public void previousMedia() {
-        if(currentPlaylistMusic.size() > 0) {
+        if(currentPlaylistMusic.size() > 0 && !(mediaPlayer == null)) {
             if (songNumber > 0) {
 
                 songNumber--;
@@ -476,7 +476,6 @@ public class Controller implements Initializable{
                 }
 
                 if (running) {
-
                     cancelTimer();
                 }
 
@@ -486,6 +485,8 @@ public class Controller implements Initializable{
                 mediaPlayer = new MediaPlayer(media);
 
                 songLabel.setText(f.getName());
+
+                System.out.println(player_isPlaying);
 
                 if(player_isPlaying) {
                     playMedia(2);
@@ -518,7 +519,7 @@ public class Controller implements Initializable{
     }
 
     public void nextMedia() {
-        if(currentPlaylistMusic.size() > 0) {
+        if(currentPlaylistMusic.size() > 0 && !(mediaPlayer == null)) {
             if (songNumber < currentPlaylistMusic.size() - 1) {
 
                 songNumber++;
