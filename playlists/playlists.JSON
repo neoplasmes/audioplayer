@@ -1,1 +1,18 @@
-{"playlists":[{"music":["music/creed.mp3","music/darkangel.mp3"],"name":"default_1"},{"music":["music/creed.mp3","music/typecast.mp3"],"name":"default_2"},{"music":["music/kodacblack.wav","music/lilpeep.wav","music/waiting.wav"],"name":"default"},{"music":["music/kodacblack.wav","music/lilpeep.wav","music/waiting.wav"],"name":"default"},{"music":["music/kodacblack.wav","music/lilpeep.wav","music/waiting.wav"],"name":"default"}]}
+{
+  "playlists": [
+    {
+      "name": "default_1",
+      "music": [
+        "music/creed.mp3",
+        "music/darkangel.mp3"
+      ]
+    },
+    {
+      "name": "default_2",
+      "music": [
+        "music/creed.mp3",
+        "music/typecast.mp3"
+      ]
+    }
+  ]
+}

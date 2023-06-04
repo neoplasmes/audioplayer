@@ -80,8 +80,8 @@ public class Controller implements Initializable{
 
     //Конец моего
 
-    protected Media media;
-    protected MediaPlayer mediaPlayer;
+    protected static Media media;
+    protected static MediaPlayer mediaPlayer;
 
     private File directory;
     private File[] files;
@@ -103,24 +103,11 @@ public class Controller implements Initializable{
 
         currentPlaylistMusic = new ArrayList<>();
 
-        songs = new ArrayList<>();
 
-        directory = new File("music");
+        //media = new Media(songs.get(songNumber).toURI().toString());
+        //mediaPlayer = new MediaPlayer(media);
 
-        files = directory.listFiles();
-
-        if(files != null) {
-
-            for(File file : files) {
-
-                songs.add(file);
-            }
-        }
-
-        media = new Media(songs.get(songNumber).toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
-
-        songLabel.setText(songs.get(songNumber).getName());
+        //songLabel.setText(songs.get(songNumber).getName());
 
         //for(int i = 0; i < speeds.length; i++) {
 
@@ -333,7 +320,7 @@ public class Controller implements Initializable{
     }
 
 
-    //Метод чтобы обновить json файл 
+    //Метод чтобы обновить json файл
     public void updateJSON(JSONArray content) throws IOException {
         JSONObject update = new JSONObject();
         update.put("playlists", content);
@@ -367,7 +354,7 @@ public class Controller implements Initializable{
     //Обновление текущего листа, находящегося сбоку справа
     //Метод принимает список файлов, музыки и имя плейлиста, который сейчас врубится
     public void updateCurrentPlaylist(ArrayList<String> paths, String name, int playlist_id) throws IOException {
-        int id = 1;
+        int id = 0;
         String pt_buttonID = "pt_button_";
 
         playlistLabel.setText(name);
@@ -379,7 +366,7 @@ public class Controller implements Initializable{
         current_playlist_id = playlist_id;
 
 
-        //Добавляем справа а-ля кнопки-треки 
+        //Добавляем справа а-ля кнопки-треки
         for (String path : paths) {
             //Переменная PATH содержит в себе трек, который сейчас привяжется к кнопке, которая будет его воспроизводить
             File m = new File(path);
@@ -394,7 +381,9 @@ public class Controller implements Initializable{
                     if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
                         if(mouseEvent.getClickCount() == 1) {
                             songLabel.setText(path);
+                            songNumber = Integer.parseInt(pt_button.getId().split("_")[2]);
                         } else if(mouseEvent.getClickCount() == 2) {
+                            songNumber = Integer.parseInt(pt_button.getId().split("_")[2]);
                             songLabel.setText(path);
                             media = new Media(m.toURI().toString());
                             mediaPlayer = new MediaPlayer(media);
@@ -406,6 +395,8 @@ public class Controller implements Initializable{
 
             //Добавляем кнопку справа
             current_playlist.getChildren().add(pt_button);
+            //увеличиваем ид на 1
+            id += 1;
         }
     }
 
@@ -438,25 +429,34 @@ public class Controller implements Initializable{
 
 
     public void playMedia() {
-        if (!player_isPlaying){
-            player_isPlaying = true;
-            beginTimer();
-            //changeSpeed(null);
-            mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
-            mediaPlayer.play();
+        if (currentPlaylistMusic.size() > 0) {
+            if (!player_isPlaying) {
+                player_isPlaying = true;
+                beginTimer();
+                //changeSpeed(null);
+                mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
+                mediaPlayer.play();
 
-            playButton.setText("⏸");
-        } else {
-            player_isPlaying = false;
-            playButton.setText("▶");
-            pauseMedia();
+                playButton.setText("⏸");
+            } else {
+                player_isPlaying = false;
+                playButton.setText("▶");
+                pauseMedia();
+            }
+        }
+    }
+
+    //перегрузка для кнопок переключения трека
+    public void playMedia(int mode) {
+        if (currentPlaylistMusic.size() > 0) {
+            beginTimer();
+            playMedia();
         }
     }
 
     public void pauseMedia() {
-
-        cancelTimer();
-        mediaPlayer.pause();
+            cancelTimer();
+            mediaPlayer.pause();
     }
 
     public void resetMedia() {
@@ -466,78 +466,101 @@ public class Controller implements Initializable{
     }
 
     public void previousMedia() {
+        if(currentPlaylistMusic.size() > 0) {
+            if (songNumber > 0) {
 
-        if(songNumber > 0) {
+                songNumber--;
 
-            songNumber--;
+                if(player_isPlaying) {
+                    mediaPlayer.stop();
+                }
 
-            mediaPlayer.stop();
+                if (running) {
 
-            if(running) {
+                    cancelTimer();
+                }
 
-                cancelTimer();
+                File f = new File(currentPlaylistMusic.get(songNumber));
+
+                media = new Media(f.toURI().toString());
+                mediaPlayer = new MediaPlayer(media);
+
+                songLabel.setText(f.getName());
+
+                if(player_isPlaying) {
+                    playMedia(2);
+                }
+            } else {
+
+                songNumber = currentPlaylistMusic.size() - 1;
+
+                if(player_isPlaying) {
+                    mediaPlayer.stop();
+                }
+
+                if (running) {
+
+                    cancelTimer();
+                }
+
+                File f = new File(currentPlaylistMusic.get(songNumber));
+
+                media = new Media(f.toURI().toString());
+                mediaPlayer = new MediaPlayer(media);
+
+                songLabel.setText(f.getName());
+
+                if(player_isPlaying) {
+                    playMedia(2);
+                }
             }
-
-            media = new Media(songs.get(songNumber).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-
-            songLabel.setText(songs.get(songNumber).getName());
-
-            playMedia();
-        }
-        else {
-
-            songNumber = songs.size() - 1;
-
-            mediaPlayer.stop();
-
-            if(running) {
-
-                cancelTimer();
-            }
-
-            media = new Media(songs.get(songNumber).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-            System.out.println(songs.get(songNumber).toURI().toString());
-
-            songLabel.setText(songs.get(songNumber).getName());
-
-            playMedia();
         }
     }
 
     public void nextMedia() {
+        if(currentPlaylistMusic.size() > 0) {
+            if (songNumber < currentPlaylistMusic.size() - 1) {
 
-        if(songNumber < songs.size() - 1) {
+                songNumber++;
 
-            songNumber++;
+                if(player_isPlaying) {
+                    mediaPlayer.stop();
+                }
 
-            mediaPlayer.stop();
+                if (running) {
 
-            if(running) {
+                    cancelTimer();
+                }
 
-                cancelTimer();
+                File f = new File(currentPlaylistMusic.get(songNumber));
+
+                media = new Media(f.toURI().toString());
+                mediaPlayer = new MediaPlayer(media);
+
+                songLabel.setText(f.getName());
+
+                if(player_isPlaying) {
+                    playMedia(2);
+                }
+            } else {
+
+                songNumber = 0;
+
+                if(player_isPlaying) {
+                    mediaPlayer.stop();
+                }
+
+                File f = new File(currentPlaylistMusic.get(songNumber));
+
+                media = new Media(f.toURI().toString());
+                mediaPlayer = new MediaPlayer(media);
+
+                songLabel.setText(f.getName());
+
+                if(player_isPlaying) {
+                    playMedia(2);
+                }
             }
-
-            media = new Media(songs.get(songNumber).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-
-            songLabel.setText(songs.get(songNumber).getName());
-
-            playMedia();
-        }
-        else {
-
-            songNumber = 0;
-
-            mediaPlayer.stop();
-
-            media = new Media(songs.get(songNumber).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-
-            songLabel.setText(songs.get(songNumber).getName());
-
-            playMedia();
         }
     }
 
@@ -587,7 +610,7 @@ public class Controller implements Initializable{
 
 
 
-    //Отсюда начинается хороший код 
+    //Отсюда начинается хороший код
 
 
 
@@ -608,32 +631,39 @@ public class Controller implements Initializable{
         List<File> files = event.getDragboard().getFiles();
         List<Button> buttons = new ArrayList<>(); // дост.
         String pt_buttonID = "pt_button_";
-        int i = 0;
+        int id = 0;
 
         for (File file : files) {
-            i += 1;
+
 
             currentPlaylistMusic.add(file.getAbsolutePath());
 
             String songName = file.getName();
-            playTrackButton pt_button = new playTrackButton(file, pt_buttonID + i);
+            playTrackButton pt_button = new playTrackButton(file, pt_buttonID + id);
 
             pt_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
                         if(mouseEvent.getClickCount() == 1) {
+                            songNumber = Integer.parseInt(pt_button.getId().split("_")[2]);
                             songLabel.setText(songName);
+
+                            media = new Media(file.toURI().toString());
+                            mediaPlayer = new MediaPlayer(media);
 
                         } else if(mouseEvent.getClickCount() == 2) {
                             try {
                                 cancelTimer();
                                 mediaPlayer.pause();
-                            } catch (Exception e){
-                            }
+                            } catch (Exception e){}
+
+                            songNumber = Integer.parseInt(pt_button.getId().split("_")[2]);
                             songLabel.setText(songName);
+
                             media = new Media(file.toURI().toString());
                             mediaPlayer = new MediaPlayer(media);
+
                             playMedia();
                         }
                     }
@@ -641,6 +671,7 @@ public class Controller implements Initializable{
             });
 
             current_playlist.getChildren().add(pt_button);
+            id += 1;
         }
 
     }
