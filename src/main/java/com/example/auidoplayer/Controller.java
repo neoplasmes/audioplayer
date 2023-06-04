@@ -380,11 +380,30 @@ public class Controller implements Initializable{
                 public void handle(MouseEvent mouseEvent) {
                     if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
                         if(mouseEvent.getClickCount() == 1) {
-                            songLabel.setText(path);
+                            try {
+                                cancelTimer();
+                                songProgressBar.setProgress(0.0);
+
+                                player_isPlaying = false;
+                                playButton.setText("▶");
+
+                                mediaPlayer.pause();
+                            } catch (Exception e){}
+
                             songNumber = Integer.parseInt(pt_button.getId().split("_")[2]);
+                            songLabel.setText(m.getName());
+
+                            media = new Media(m.toURI().toString());
+                            mediaPlayer = new MediaPlayer(media);
                         } else if(mouseEvent.getClickCount() == 2) {
+                            try {
+                                cancelTimer();
+                                mediaPlayer.pause();
+                            } catch (Exception e){}
+
                             songNumber = Integer.parseInt(pt_button.getId().split("_")[2]);
-                            songLabel.setText(path);
+                            songLabel.setText(m.getName());
+
                             media = new Media(m.toURI().toString());
                             mediaPlayer = new MediaPlayer(media);
                             playMedia();
@@ -602,7 +621,6 @@ public class Controller implements Initializable{
     }
 
     public void cancelTimer() {
-
         running = false;
         timer.cancel();
     }
@@ -647,6 +665,16 @@ public class Controller implements Initializable{
                 public void handle(MouseEvent mouseEvent) {
                     if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
                         if(mouseEvent.getClickCount() == 1) {
+                            try {
+                                cancelTimer();
+                                songProgressBar.setProgress(0.0);
+
+                                player_isPlaying = false;
+                                playButton.setText("▶");
+
+                                mediaPlayer.pause();
+                            } catch (Exception e){}
+
                             songNumber = Integer.parseInt(pt_button.getId().split("_")[2]);
                             songLabel.setText(songName);
 
