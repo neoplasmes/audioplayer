@@ -46,7 +46,7 @@ public class Controller implements Initializable{
     @FXML
     private ComboBox<String> speedBox;
     @FXML
-    private Slider volumeSlider;
+    private Slider volumeSlider, timeSlider;
     @FXML
     private ProgressBar songProgressBar;
 
@@ -120,7 +120,14 @@ public class Controller implements Initializable{
         //}
 
         //speedBox.setOnAction(this::changeSpeed);
-
+//        timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+//
+//            @Override
+//            public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+//
+//                mediaPlayer.seek(Duration.millis(timeSlider.getValue()*1000));
+//            }
+//        });
         volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
             @Override
@@ -440,6 +447,7 @@ public class Controller implements Initializable{
 
     public void resetMedia() {
 
+
         songProgressBar.setProgress(0);
         mediaPlayer.seek(Duration.seconds(0));
     }
@@ -498,6 +506,7 @@ public class Controller implements Initializable{
                     }
                 }
             } else {
+
                 songProgressBar.setProgress(0);
                 mediaPlayer.seek(Duration.seconds(0));
             }
@@ -578,6 +587,7 @@ public class Controller implements Initializable{
                 double end = media.getDuration().toSeconds();
                 songProgressBar.setProgress(current/end);
 
+
                 if(current/end == 1) {
 
                     cancelTimer();
@@ -586,6 +596,14 @@ public class Controller implements Initializable{
         };
 
         timer.scheduleAtFixedRate(task, 0, 1000);
+    }
+
+    public void setTimeSlider(MouseEvent event){
+        double time = timeSlider.getValue();
+        double current = mediaPlayer.getCurrentTime().toSeconds();
+        double end = media.getDuration().toSeconds();
+        System.out.println(432);
+        mediaPlayer.seek(Duration.millis((timeSlider.getValue() / 100) * end * 1000));
     }
 
     public void cancelTimer() {
@@ -693,7 +711,9 @@ public class Controller implements Initializable{
                         if(mouseEvent.getClickCount() == 1) {
                             try {
                                 cancelTimer();
+
                                 songProgressBar.setProgress(0.0);
+
 
                                 player_isPlaying = false;
                                 playButton.setText("▶");

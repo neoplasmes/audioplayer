@@ -78,5 +78,6 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
+      <Slider fx:id="timeSlider" layoutX="9.0" layoutY="421.0" max="100.0" onMousePressed="#setTimeSlider" opacity="0.0" prefHeight="14.0" prefWidth="623.0" value="50.0" />
    </children>
 </AnchorPane>
