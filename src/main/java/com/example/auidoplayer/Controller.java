@@ -6,19 +6,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.DragEvent;
@@ -26,6 +19,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
+import javafx.scene.media.EqualizerBand;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.DirectoryChooser;
@@ -56,26 +50,18 @@ public class Controller implements Initializable{
 
     //Моё
     @FXML
-    private Button addButton;
-    @FXML
     private VBox current_playlist;
+    public double playlistWidth;
     @FXML
     private ScrollPane currentPlaylistScroll;
     @FXML
-    private ScrollPane playlistScroll;
-    @FXML
-    private FlowPane playlistPane;
-    @FXML
     private Label playlistLabel;
-
-    @FXML
-    private Button savePlaylistButton;
 
     private int current_playlist_id;
 
     public Button plusButton;
 
-    private ArrayList<String> currentPlaylistMusic;
+    private ArrayList<trackButton> songs;
 
     private JSONObject jsonObject;
     private JSONArray playlists;
@@ -91,8 +77,6 @@ public class Controller implements Initializable{
     private File directory;
     private File[] files;
 
-    private ArrayList<File> songs;
-
     private int songNumber;
     private int[] speeds = {25, 50, 75, 100, 125, 150, 175, 200};
 
@@ -104,15 +88,9 @@ public class Controller implements Initializable{
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
 
+        playlistWidth = current_playlist.getWidth();
 
-
-        currentPlaylistMusic = new ArrayList<>();
-
-
-        //media = new Media(songs.get(songNumber).toURI().toString());
-        //mediaPlayer = new MediaPlayer(media);
-
-        //songLabel.setText(songs.get(songNumber).getName());
+        songs = new ArrayList<>();
 
         //for(int i = 0; i < speeds.length; i++) {
 
@@ -132,8 +110,9 @@ public class Controller implements Initializable{
 
             @Override
             public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-
-                mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
+                if (!(mediaPlayer == null)){
+                    mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
+                }
             }
         });
 
@@ -147,11 +126,11 @@ public class Controller implements Initializable{
         currentPlaylistScroll.setContent(current_playlist);
 
 
-        playlistPane.setStyle("-fx-border-color: #000000");
-        playlistPane.setHgap(40.0);
-        playlistPane.setVgap(40.0);
+        //playlistPane.setStyle("-fx-border-color: #000000");
+        //playlistPane.setHgap(40.0);
+        //playlistPane.setVgap(40.0);
 
-        playlistScroll.setContent(playlistPane);
+        //playlistScroll.setContent(playlistPane);
 
         //ColumnConstraints column = new ColumnConstraints();
         //column.setPercentWidth(0.2);
@@ -161,10 +140,10 @@ public class Controller implements Initializable{
         //row.setPercentHeight(0.2);
 
 
-        int test_i = 1;
+       // int test_i = 1;
 
 
-        String content;
+        /*String content;
         try {
             content = Files.readString(Paths.get("playlists/playlists.JSON"), StandardCharsets.UTF_8);
         } catch (IOException e) {
@@ -197,7 +176,7 @@ public class Controller implements Initializable{
         });
 
         playlistPane.getChildren().add(plusButton);
-        playlistPane.setMargin(plusButton, new Insets(40.0, 40.0,40.0,40.0));
+        playlistPane.setMargin(plusButton, new Insets(40.0, 40.0,40.0,40.0));*/
 
 
     }
@@ -205,13 +184,13 @@ public class Controller implements Initializable{
 
 
 
-    public void addNewPlaylist_frontend(JSONObject js_obj, int id) throws IOException {
-        /*TextField tf = new TextField();
+    /*public void addNewPlaylist_frontend(JSONObject js_obj, int id) throws IOException {
+        //TextField tf = new TextField();
 
-        pane.getChildren().add(tf);
+        //pane.getChildren().add(tf);
 
-        tf.setLayoutX(plusButton.getLayoutX() + 5.0);
-        tf.setLayoutY(plusButton.getLayoutY() + 5.0);*/
+        //tf.setLayoutX(plusButton.getLayoutX() + 5.0);
+        //tf.setLayoutY(plusButton.getLayoutY() + 5.0);
 
 
 
@@ -258,10 +237,10 @@ public class Controller implements Initializable{
 
         //Button b = new Button();
 
-    }
+    }*/
 
     //Перегрузка для кнопки ПЛЮС
-    public void addNewPlaylist_frontend() throws IOException {
+    /*public void addNewPlaylist_frontend() throws IOException {
 
         addNewPlaylist_backend();
 
@@ -281,7 +260,7 @@ public class Controller implements Initializable{
 
         playlistPane.getChildren().add(plusButton);
         playlistPane.setMargin(plusButton, new Insets(40.0, 40.0,40.0,40.0));
-    }
+    }*/
 
 
     //Этот метод здесь для настроения
@@ -296,10 +275,10 @@ public class Controller implements Initializable{
 
 
     //Здесь идет обновление JSON репрезентации плейлиста. Он внесен в отдельный метод, т.к. скорее всего ещё где-то отдельно понадобится
-    public void addNewPlaylist_backend() throws IOException {
-        /*StringBuilder write = new StringBuilder();
-        JSONWriter jsonWriter = new JSONWriter(write);
-        */
+    /*public void addNewPlaylist_backend() throws IOException {
+        //StringBuilder write = new StringBuilder();
+        //JSONWriter jsonWriter = new JSONWriter(write);
+
         JSONObject new_playlist = new JSONObject();
         System.out.println(playlists);
         //имя нового плейлиста
@@ -329,7 +308,7 @@ public class Controller implements Initializable{
         //JSONObject object = playlists.toJSONObject(list);
         //System.out.println("Final JSONOBject: " + object);
 
-    }
+    }*/
 
 
     //Метод чтобы обновить json файл
@@ -373,7 +352,7 @@ public class Controller implements Initializable{
         System.out.println("1");
         System.out.println(paths);
 
-        currentPlaylistMusic = paths;
+        //songs = paths;
         current_playlist_id = playlist_id;
 
         List<File> files = new ArrayList<>();
@@ -387,13 +366,13 @@ public class Controller implements Initializable{
     }
 
 
-    public void savePlaylist() throws IOException {
+    /*public void savePlaylist() throws IOException {
         //Условие - временное устранение бага
         if (!playlistLabel.getText().equals("Label")){
             //Получаем текущий плейлист
             JSONObject obj = playlists.getJSONObject(current_playlist_id);
-            JSONArray arr = new JSONArray(currentPlaylistMusic);
-            obj.put("music", arr);
+            //JSONArray arr = new JSONArray(songs);
+            //obj.put("music", arr);
 
             JSONArray buffer = new JSONArray();
 
@@ -411,11 +390,11 @@ public class Controller implements Initializable{
             System.out.println(playlists);
 
         }
-    }
+    }*/
 
 
     public void playMedia() {
-        if (currentPlaylistMusic.size() > 0 && !(mediaPlayer == null)) {
+        if (songs.size() > 0 && !(mediaPlayer == null)) {
             if (!player_isPlaying) {
                 player_isPlaying = true;
                 beginTimer();
@@ -434,7 +413,8 @@ public class Controller implements Initializable{
 
     //перегрузка для кнопок переключения трека
     public void playMedia(int mode) {
-        if (currentPlaylistMusic.size() > 0 && !(mediaPlayer == null)) {
+        if (songs.size() > 0 && !(mediaPlayer == null)) {
+            mediaPlayer.getAudioEqualizer().getBands().get(3).setGain(EqualizerBand.MAX_GAIN / 3 * 2);
             beginTimer();
             mediaPlayer.play();
         }
@@ -453,7 +433,7 @@ public class Controller implements Initializable{
     }
 
     public void previousMedia() {
-        if(currentPlaylistMusic.size() > 0 && !(mediaPlayer == null)) {
+        if(songs.size() > 0 && !(mediaPlayer == null)) {
 
             if (mediaPlayer.getCurrentTime().toSeconds() <= 5.0){
                 songProgressBar.setProgress(0);
@@ -469,7 +449,7 @@ public class Controller implements Initializable{
                         cancelTimer();
                     }
 
-                    File f = new File(currentPlaylistMusic.get(songNumber));
+                    File f = new File(songs.get(songNumber).path);
 
                     media = new Media(f.toURI().toString());
                     mediaPlayer = new MediaPlayer(media);
@@ -483,7 +463,7 @@ public class Controller implements Initializable{
                     }
                 } else {
 
-                    songNumber = currentPlaylistMusic.size() - 1;
+                    songNumber = songs.size() - 1;
 
                     if(player_isPlaying) {
                         mediaPlayer.stop();
@@ -494,7 +474,7 @@ public class Controller implements Initializable{
                         cancelTimer();
                     }
 
-                    File f = new File(currentPlaylistMusic.get(songNumber));
+                    File f = new File(songs.get(songNumber).path);
 
                     media = new Media(f.toURI().toString());
                     mediaPlayer = new MediaPlayer(media);
@@ -514,9 +494,9 @@ public class Controller implements Initializable{
     }
 
     public void nextMedia() {
-        if(currentPlaylistMusic.size() > 0 && !(mediaPlayer == null)) {
+        if(songs.size() > 1 && !(mediaPlayer == null)) {
             songProgressBar.setProgress(0);
-            if (songNumber < currentPlaylistMusic.size() - 1) {
+            if (songNumber < songs.size() - 1) {
 
                 songNumber++;
 
@@ -529,7 +509,7 @@ public class Controller implements Initializable{
                     cancelTimer();
                 }
 
-                File f = new File(currentPlaylistMusic.get(songNumber));
+                File f = new File(songs.get(songNumber).path);
 
                 media = new Media(f.toURI().toString());
                 mediaPlayer = new MediaPlayer(media);
@@ -547,7 +527,7 @@ public class Controller implements Initializable{
                     mediaPlayer.stop();
                 }
 
-                File f = new File(currentPlaylistMusic.get(songNumber));
+                File f = new File(songs.get(songNumber).path);
 
                 media = new Media(f.toURI().toString());
                 mediaPlayer = new MediaPlayer(media);
@@ -680,17 +660,18 @@ public class Controller implements Initializable{
         } catch (Exception e) {}
     }
 
-
+    final String pt_buttonID_sample = "pt_button_";
 
     public void uploadTracks(List<File> files){
 
-        String pt_buttonID = "pt_button_";
+
 
         int k = 0;
 
         while(k < files.size()) {
             File file = files.get(k);
 
+            //скип папки и добавление в треков из неё в массив
             if (file.isDirectory()) {
                 for(File f : file.listFiles()){
                     files.add(f);
@@ -699,58 +680,93 @@ public class Controller implements Initializable{
                 continue;
             }
 
-            currentPlaylistMusic.add(file.getAbsolutePath());
-
-            String songName = file.getName();
-            playTrackButton pt_button = new playTrackButton(file, pt_buttonID + next_pt_id);
-
-            pt_button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                        if(mouseEvent.getClickCount() == 1) {
-                            try {
-                                cancelTimer();
-
-                                songProgressBar.setProgress(0.0);
 
 
-                                player_isPlaying = false;
-                                playButton.setText("▶");
+            createTrackButton(file);
 
-                                mediaPlayer.pause();
-                            } catch (Exception e){}
-
-                            songNumber = Integer.parseInt(pt_button.getId().split("_")[2]);
-                            songLabel.setText(songName);
-
-                            media = new Media(file.toURI().toString());
-                            mediaPlayer = new MediaPlayer(media);
-
-                        } else if(mouseEvent.getClickCount() == 2) {
-                            try {
-                                cancelTimer();
-                                mediaPlayer.pause();
-                            } catch (Exception e){}
-
-                            songNumber = Integer.parseInt(pt_button.getId().split("_")[2]);
-                            songLabel.setText(songName);
-
-                            media = new Media(file.toURI().toString());
-                            mediaPlayer = new MediaPlayer(media);
-
-                            playMedia();
-                        }
-                    }
-                }
-            });
+            if (songs.size() > 1){
+                nextButton.setStyle("-fx-background-color:  #ffbc00");
+            }
 
             k += 1;
-            current_playlist.getChildren().add(pt_button);
-            next_pt_id += 1;
         }
+
+
+
 
     }
 
+    public void createTrackButton(File file){
+        String songName = file.getName();
+        trackButton trackbutton = new trackButton(file, pt_buttonID_sample + next_pt_id, playlistWidth);
+
+        trackbutton.label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+                    if(mouseEvent.getClickCount() == 1) {
+                        try {
+                            cancelTimer();
+
+                            songProgressBar.setProgress(0.0);
+
+
+                            player_isPlaying = false;
+                            playButton.setText("▶");
+
+                            mediaPlayer.pause();
+                        } catch (Exception e){}
+
+                        songNumber = Integer.parseInt(trackbutton.getId().split("_")[2]);
+                        songLabel.setText(songName);
+
+                        media = new Media(file.toURI().toString());
+                        mediaPlayer = new MediaPlayer(media);
+
+                    } else if(mouseEvent.getClickCount() == 2) {
+                        try {
+                            cancelTimer();
+                            mediaPlayer.pause();
+                        } catch (Exception e){}
+
+                        songNumber = Integer.parseInt(trackbutton.getId().split("_")[2]);
+                        songLabel.setText(songName);
+
+                        media = new Media(file.toURI().toString());
+                        mediaPlayer = new MediaPlayer(media);
+
+                        playMedia();
+                    }
+                } 
+            }
+        });
+        
+        trackbutton.deleteButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
+                    if(mouseEvent.getClickCount() == 1) {
+                        
+                        
+                        
+                    } 
+                }
+            }
+        });
+
+        songs.add(trackbutton);
+        current_playlist.getChildren().add(trackbutton);
+
+
+        next_pt_id += 1;
+    }
+
+
+
 
 }
+
+
+
+
+

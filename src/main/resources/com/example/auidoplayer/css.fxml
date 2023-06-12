@@ -7,7 +7,6 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -30,7 +29,7 @@
             <Font size="21.0" />
          </font>
       </Button>
-      <Button fx:id="nextButton" layoutX="358.0" layoutY="457.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="46.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="▶▶" textFill="WHITE">
+      <Button fx:id="nextButton" layoutX="358.0" layoutY="457.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="46.0" prefWidth="55.0" style="-fx-background-color: #bababa;" text="▶▶" textFill="WHITE">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
@@ -41,20 +40,11 @@
             <VBox fx:id="current_playlist" onDragDropped="#onDragDroppedPlaylist" onDragOver="#onDragOverPlaylist" prefHeight="384.0" prefWidth="285.0" style="-fx-background-color: #FFFFFF;" />
          </content>
       </ScrollPane>
-      <ScrollPane fx:id="playlistScroll" layoutX="-6.0" layoutY="2.0" prefHeight="363.0" prefWidth="650.0">
-         <content>
-            <FlowPane fx:id="playlistPane" prefHeight="362.0" prefWidth="635.0" />
-         </content>
-      </ScrollPane>
       <Button fx:id="ulpoadPlaylistButton" layoutX="879.0" layoutY="466.0" mnemonicParsing="false" onAction="#onUploadButton" style="-fx-background-color: #ffbc00;" text="Upload">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
       <Button fx:id="clearPlaylistButton" layoutX="761.0" layoutY="467.0" mnemonicParsing="false" onAction="#clearPlaylist" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="Clear">
-         <font>
-            <Font name="System Bold" size="12.0" />
-         </font></Button>
-      <Button fx:id="savePlaylistButton" layoutX="695.0" layoutY="466.0" mnemonicParsing="false" onAction="#savePlaylist" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="Save">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>

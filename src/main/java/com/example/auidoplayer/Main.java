@@ -22,8 +22,6 @@ import javafx.scene.Scene;
 
 public class Main extends Application {
 
-    public static FileChooser filechooser;
-
     @Override
     public void start(Stage stage) throws IOException {
 
@@ -49,4 +47,3 @@ public class Main extends Application {
         launch(args);
     }
 }
-// :) // :) // :) // :) // :) // :) // :) // :) // :) // :) // :) // :) // :) // :) // :) // :) // :) // :) // :) // :) // :) // :)
