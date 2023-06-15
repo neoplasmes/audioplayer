@@ -1,19 +1,28 @@
 package com.example.auidoplayer;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -27,7 +36,7 @@ import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import org.json.*;
 
-public class Controller implements Initializable{
+public class Controller implements Initializable {
 
     @FXML
     private AnchorPane pane;
@@ -36,50 +45,33 @@ public class Controller implements Initializable{
     @FXML
     public Label songLabel;
     @FXML
-    private Button playButton, pauseButton, resetButton, previousButton, nextButton, saveNameButton;
+    private Button playButton, nextButton, saveNameButton;
     @FXML
-    private ComboBox<String> speedBox;
-    @FXML
-    private Slider volumeSlider, timeSlider;
+    private Slider volumeSlider;
     @FXML
     private ProgressBar songProgressBar;
-
-
-
-
-
-    //Моё
+    private ProgressBar changeProgressBar;
     @FXML
     private VBox current_playlist;
-    public double playlistWidth;
+    public double playlistWidth = 0.0;
     @FXML
     private ScrollPane currentPlaylistScroll;
     @FXML
     private Label playlistLabel;
-
-    private int current_playlist_id;
-
-    public Button plusButton;
-
+    @FXML
+    private Label currentTime;
+    @FXML
+    private Label fullTime;
+    @FXML
+    Label tip;
     private ArrayList<trackButton> songs;
-
-    private JSONObject jsonObject;
-    private JSONArray playlists;
-
     private boolean player_isPlaying = false;
-
-    private int next_pt_id = 0;
     //Конец моего
 
     protected static Media media;
     protected static MediaPlayer mediaPlayer;
 
-    private File directory;
-    private File[] files;
-
     private int songNumber;
-    private int[] speeds = {25, 50, 75, 100, 125, 150, 175, 200};
-
     private Timer timer;
     private TimerTask task;
 
@@ -87,234 +79,76 @@ public class Controller implements Initializable{
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-
-        playlistWidth = current_playlist.getWidth();
+        tip.setVisible(false);
+        currentTime.setVisible(false);
+        fullTime.setVisible(false);
 
         songs = new ArrayList<>();
 
-        //for(int i = 0; i < speeds.length; i++) {
-
-        //    speedBox.getItems().add(Integer.toString(speeds[i])+"%");
-        //}
-
-        //speedBox.setOnAction(this::changeSpeed);
-//        timeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-//
-//            @Override
-//            public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-//
-//                mediaPlayer.seek(Duration.millis(timeSlider.getValue()*1000));
-//            }
-//        });
         volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
-
             @Override
             public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-                if (!(mediaPlayer == null)){
+                if (!(mediaPlayer == null)) {
                     mediaPlayer.setVolume(volumeSlider.getValue() * 0.01);
                 }
             }
         });
 
-        songProgressBar.setStyle("-fx-accent: #00FF00;");
+        songProgressBar.setStyle("-fx-accent: #4D8FD6;");
 
+        changeProgressBar = new ProgressBar(0);
+        changeProgressBar.setStyle("-fx-accent: #4D8FD6;");
+        changeProgressBar.setOpacity(0.5);
+        changeProgressBar.setPrefWidth(songProgressBar.getPrefWidth());
+        changeProgressBar.setPrefHeight(songProgressBar.getPrefHeight());
+        changeProgressBar.setBlendMode(BlendMode.MULTIPLY);
 
-        //My
+        pane.getChildren().add(changeProgressBar);
+        AnchorPane.setTopAnchor(changeProgressBar, songProgressBar.getLayoutY());
+        AnchorPane.setLeftAnchor(changeProgressBar, songProgressBar.getLayoutX());
+        changeProgressBar.addEventHandler(MouseEvent.ANY, mouseEvent -> progressBarHandler(mouseEvent));
 
+        System.out.println(currentPlaylistScroll.getPrefWidth());
 
-
+        currentPlaylistScroll.getStylesheets().add(getClass().getResource("scrollpane.css").toString());
         currentPlaylistScroll.setContent(current_playlist);
 
+        playlistWidth = currentPlaylistScroll.getPrefWidth() - 15;
 
-        //playlistPane.setStyle("-fx-border-color: #000000");
-        //playlistPane.setHgap(40.0);
-        //playlistPane.setVgap(40.0);
+        currentPlaylistScroll.setMaxWidth(currentPlaylistScroll.getPrefWidth());
+        currentPlaylistScroll.setMinWidth(currentPlaylistScroll.getPrefWidth());
 
-        //playlistScroll.setContent(playlistPane);
+        current_playlist.setPrefWidth(playlistWidth);
 
-        //ColumnConstraints column = new ColumnConstraints();
-        //column.setPercentWidth(0.2);
-
-
-        //RowConstraints row = new RowConstraints();
-        //row.setPercentHeight(0.2);
-
-
-       // int test_i = 1;
-
-
-        /*String content;
+        String data;
         try {
-            content = Files.readString(Paths.get("playlists/playlists.JSON"), StandardCharsets.UTF_8);
+            data = Files.readString(Paths.get("playlists/playlists.JSON"), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        jsonObject = new JSONObject(content);
+        JSONObject jo = new JSONObject(data);
+        JSONArray arr = jo.getJSONArray("tracks");
 
-        playlists = jsonObject.getJSONArray("playlists");
-
-
-        //Я пока не собираюсь писать то, что здесь происходит
-        for(int i = 0; i < playlists.length(); i++) {
-            JSONObject this_object = playlists.getJSONObject(i);
-            try {
-                addNewPlaylist_frontend(this_object, i);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        List<File> list = new ArrayList<>();
+        for (Object o : arr){
+            list.add(new File(o.toString()));
         }
 
-
-        plusButton = new Button("+");
-        plusButton.setOnAction(event -> {
-            try {
-                addNewPlaylist_frontend();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        playlistPane.getChildren().add(plusButton);
-        playlistPane.setMargin(plusButton, new Insets(40.0, 40.0,40.0,40.0));*/
-
-
+        if(list.size() > 0) {uploadTracks(list);}
     }
-
-
-
-
-    /*public void addNewPlaylist_frontend(JSONObject js_obj, int id) throws IOException {
-        //TextField tf = new TextField();
-
-        //pane.getChildren().add(tf);
-
-        //tf.setLayoutX(plusButton.getLayoutX() + 5.0);
-        //tf.setLayoutY(plusButton.getLayoutY() + 5.0);
-
-
-
-        //playlistPane.getChildren().remove(plusButton);
-        //addNewPlaylist_backend();
-
-        //Имя плейлиста который щас прикрепится
-        String this_playlist_name = js_obj.getString("name");
-
-        //Ноде к которому будет сейчас прикреплён плейлист
-        Button b = new Button(this_playlist_name);
-
-        //Список музыки который сейчас прикрепится
-        JSONArray this_playlist_music_json = js_obj.getJSONArray("music");
-
-        //Репрезентация строчки выше в string
-        ArrayList<String> this_playlist_music_paths = new ArrayList<String>();
-
-        for (int j = 0; j < this_playlist_music_json.length(); j++) {
-            this_playlist_music_paths.add(this_playlist_music_json.get(j).toString());
-        }
-        //Конец репрезентации
-
-        //System.out.println(this_playlist_music_paths);
-
-        //Добавляем обновление плейлиста на кнопку
-        b.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-
-                try {
-                    current_playlist.getChildren().clear();
-                    updateCurrentPlaylist(this_playlist_music_paths, this_playlist_name, id);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-        });
-
-        playlistPane.getChildren().add(b);
-        playlistPane.setMargin(b, new Insets(40.0, 40.0,40.0,40.0));
-
-
-        //Button b = new Button();
-
-    }*/
-
-    //Перегрузка для кнопки ПЛЮС
-    /*public void addNewPlaylist_frontend() throws IOException {
-
-        addNewPlaylist_backend();
-
-        playlistPane.getChildren().remove(plusButton);
-
-        addNewPlaylist_frontend(playlists.getJSONObject(playlists.length() - 1), playlists.length() - 1);
-
-        //Возвращаем кнопку ПЛЮС
-        plusButton = new Button("+");
-        plusButton.setOnAction(event -> {
-            try {
-                addNewPlaylist_frontend();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        playlistPane.getChildren().add(plusButton);
-        playlistPane.setMargin(plusButton, new Insets(40.0, 40.0,40.0,40.0));
-    }*/
-
-
-    //Этот метод здесь для настроения
-    private static JSONArray listNumberArray(int max){
-        JSONArray res = new JSONArray();
-        for (int i=0; i<max;i++) {
-            //The value of the labels must be an String in order to make it work
-            res.put(String.valueOf(i));
-        }
-        return res;
-    }
-
-
-    //Здесь идет обновление JSON репрезентации плейлиста. Он внесен в отдельный метод, т.к. скорее всего ещё где-то отдельно понадобится
-    /*public void addNewPlaylist_backend() throws IOException {
-        //StringBuilder write = new StringBuilder();
-        //JSONWriter jsonWriter = new JSONWriter(write);
-
-        JSONObject new_playlist = new JSONObject();
-        System.out.println(playlists);
-        //имя нового плейлиста
-        new_playlist.put("name", "default");
-
-        //Список музыки в новом плейлисте, нужно добавить нормальное добавление
-        JSONArray new_music = new JSONArray();
-        new_music.put("music/kodacblack.wav");
-        new_music.put("music/lilpeep.wav");
-        new_music.put("music/waiting.wav");
-
-        //Добавляем список в новый плейлист
-        new_playlist.put("music", new_music);
-
-        //Добавляем новый плейлист в общий список плейлистов
-        playlists.put(new_playlist);
-
-        //Обновляем файл
-        System.out.println(playlists.toString());
-
-
-
-        updateJSON(playlists);
-
-
-        //JSONArray list = listNumberArray(playlists.length());
-        //JSONObject object = playlists.toJSONObject(list);
-        //System.out.println("Final JSONOBject: " + object);
-
-    }*/
 
 
     //Метод чтобы обновить json файл
-    public void updateJSON(JSONArray content) throws IOException {
+    public void savePlaylist() throws IOException {
+        JSONArray array = new JSONArray();
+
+        for (trackButton b : songs){
+            array.put(b.path);
+        }
+
         JSONObject update = new JSONObject();
-        update.put("playlists", content);
+        update.put("tracks", array);
 
         File file = new File("playlists/playlists.JSON");
         FileWriter fw = new FileWriter(file, false);
@@ -324,11 +158,9 @@ public class Controller implements Initializable{
     }
 
 
-
-
-    public void clickPlaylistName (MouseEvent event){ // кликнешь 2 раза - поменяешь название плейлиста
-        if(event.getButton().equals(MouseButton.PRIMARY)){
-            if(event.getClickCount() == 2) {
+    public void clickPlaylistName(MouseEvent event) { // кликнешь 2 раза - поменяешь название плейлиста
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            if (event.getClickCount() == 2) {
                 changeLabelName.setVisible(true);
                 saveNameButton.setVisible(true);
                 playlistLabel.setVisible(false);
@@ -336,65 +168,16 @@ public class Controller implements Initializable{
         }
     }
 
-    public void changePlaylistName(){ // тут крч меняется имя плейлиста
+    public void changePlaylistName() { // тут крч меняется имя плейлиста
         playlistLabel.setText(changeLabelName.getText());
         changeLabelName.setVisible(false);
         saveNameButton.setVisible(false);
         playlistLabel.setVisible(true);
     }
-    //Обновление текущего листа, находящегося сбоку справа
-    //Метод принимает список файлов, музыки и имя плейлиста, который сейчас врубится
-    public void updateCurrentPlaylist(ArrayList<String> paths, String name, int playlist_id) throws IOException {
-        String pt_buttonID = "pt_button_";
-
-        playlistLabel.setText(name);
-
-        System.out.println("1");
-        System.out.println(paths);
-
-        //songs = paths;
-        current_playlist_id = playlist_id;
-
-        List<File> files = new ArrayList<>();
-
-        for (String path : paths) {
-            files.add(new File(path));
-        }
-
-        next_pt_id = 0;
-        uploadTracks(files);
-    }
-
-
-    /*public void savePlaylist() throws IOException {
-        //Условие - временное устранение бага
-        if (!playlistLabel.getText().equals("Label")){
-            //Получаем текущий плейлист
-            JSONObject obj = playlists.getJSONObject(current_playlist_id);
-            //JSONArray arr = new JSONArray(songs);
-            //obj.put("music", arr);
-
-            JSONArray buffer = new JSONArray();
-
-            for (int i = 0; i < playlists.length(); i++) {
-                if (i == current_playlist_id){
-                    buffer.put(obj);
-                } else {buffer.put(playlists.getJSONObject(i));}
-            }
-
-            System.out.println(buffer);
-
-            updateJSON(buffer);
-
-            playlists = buffer;
-            System.out.println(playlists);
-
-        }
-    }*/
 
 
     public void playMedia() {
-        if (songs.size() > 0 && !(mediaPlayer == null)) {
+        if (!(mediaPlayer == null)) {
             if (!player_isPlaying) {
                 player_isPlaying = true;
                 beginTimer();
@@ -414,79 +197,55 @@ public class Controller implements Initializable{
     //перегрузка для кнопок переключения трека
     public void playMedia(int mode) {
         if (songs.size() > 0 && !(mediaPlayer == null)) {
-            mediaPlayer.getAudioEqualizer().getBands().get(3).setGain(EqualizerBand.MAX_GAIN / 3 * 2);
+            //mediaPlayer.getAudioEqualizer().getBands().get(3).setGain(EqualizerBand.MAX_GAIN / 3 * 2);
             beginTimer();
             mediaPlayer.play();
         }
     }
 
     public void pauseMedia() {
-            cancelTimer();
-            mediaPlayer.pause();
-    }
-
-    public void resetMedia() {
-
-
-        songProgressBar.setProgress(0);
-        mediaPlayer.seek(Duration.seconds(0));
+        cancelTimer();
+        mediaPlayer.pause();
     }
 
     public void previousMedia() {
-        if(songs.size() > 0 && !(mediaPlayer == null)) {
+        if (!(mediaPlayer == null)) {
 
-            if (mediaPlayer.getCurrentTime().toSeconds() <= 5.0){
+            if ((mediaPlayer.getCurrentTime().toSeconds() <= 5.0) && (songs.size() > 0)) {
                 songProgressBar.setProgress(0);
                 if (songNumber > 0) {
-
                     songNumber--;
 
-                    if(player_isPlaying) {
+                    if (player_isPlaying) {
                         mediaPlayer.stop();
                     }
-
-                    if (running) {
+                    if(running){
                         cancelTimer();
                     }
 
                     File f = new File(songs.get(songNumber).path);
 
-                    media = new Media(f.toURI().toString());
-                    mediaPlayer = new MediaPlayer(media);
+                    setMedia(f);
 
-                    songLabel.setText(f.getName());
-
-                    System.out.println(player_isPlaying);
-
-                    if(player_isPlaying) {
+                    if (player_isPlaying) {
                         playMedia(2);
                     }
                 } else {
-
                     songNumber = songs.size() - 1;
 
-                    if(player_isPlaying) {
+                    if (player_isPlaying) {
                         mediaPlayer.stop();
                     }
-
-                    if (running) {
-
+                    if(running){
                         cancelTimer();
                     }
-
                     File f = new File(songs.get(songNumber).path);
-
-                    media = new Media(f.toURI().toString());
-                    mediaPlayer = new MediaPlayer(media);
-
-                    songLabel.setText(f.getName());
-
-                    if(player_isPlaying) {
+                    setMedia(f);
+                    if (player_isPlaying) {
                         playMedia(2);
                     }
                 }
             } else {
-
                 songProgressBar.setProgress(0);
                 mediaPlayer.seek(Duration.seconds(0));
             }
@@ -494,96 +253,57 @@ public class Controller implements Initializable{
     }
 
     public void nextMedia() {
-        if(songs.size() > 1 && !(mediaPlayer == null)) {
+        if (songs.size() > 1 && !(mediaPlayer == null)) {
             songProgressBar.setProgress(0);
             if (songNumber < songs.size() - 1) {
-
                 songNumber++;
 
-                if(player_isPlaying) {
+                if (player_isPlaying) {
                     mediaPlayer.stop();
                 }
-
-                if (running) {
-
+                if(running){
                     cancelTimer();
                 }
-
                 File f = new File(songs.get(songNumber).path);
 
-                media = new Media(f.toURI().toString());
-                mediaPlayer = new MediaPlayer(media);
-
-                songLabel.setText(f.getName());
-
-                if(player_isPlaying) {
+                setMedia(f);
+                if (player_isPlaying) {
                     playMedia(2);
                 }
             } else {
-
                 songNumber = 0;
-
-                if(player_isPlaying) {
+                if (player_isPlaying) {
                     mediaPlayer.stop();
                 }
-
+                if(running){
+                cancelTimer();
+                }
                 File f = new File(songs.get(songNumber).path);
-
-                media = new Media(f.toURI().toString());
-                mediaPlayer = new MediaPlayer(media);
-
-                songLabel.setText(f.getName());
-
-                if(player_isPlaying) {
+                setMedia(f);
+                if (player_isPlaying) {
                     playMedia(2);
                 }
             }
-        }
-    }
-
-    public void changeSpeed(ActionEvent event) {
-
-        if(speedBox.getValue() == null) {
-
-            mediaPlayer.setRate(1);
-        }
-        else {
-
-            //mediaPlayer.setRate(Integer.parseInt(speedBox.getValue()) * 0.01);
-            mediaPlayer.setRate(Integer.parseInt(speedBox.getValue().substring(0, speedBox.getValue().length() - 1)) * 0.01);
         }
     }
 
     public void beginTimer() {
-
         timer = new Timer();
 
-        task = new TimerTask() {
-
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
             public void run() {
-
                 running = true;
-                double current = mediaPlayer.getCurrentTime().toSeconds();
-                double end = media.getDuration().toSeconds();
-                songProgressBar.setProgress(current/end);
+                double current = mediaPlayer.getCurrentTime().toMinutes();
+                double end = media.getDuration().toMinutes();
+                songProgressBar.setProgress(current / end);
 
-
-                if(current/end == 1) {
-
-                    cancelTimer();
-                }
+                String minutes = String.format("%02d", (int) Math.floor(current));
+                String seconds = String.format("%02d", Math.round((current % 1.0) * 60.0));
+                Platform.runLater(() -> {currentTime.setText(minutes + ":" + seconds);});
+                if (current / end == 1) {cancelTimer();}
             }
-        };
-
-        timer.scheduleAtFixedRate(task, 0, 1000);
-    }
-
-    public void setTimeSlider(MouseEvent event){
-        double time = timeSlider.getValue();
-        double current = mediaPlayer.getCurrentTime().toSeconds();
-        double end = media.getDuration().toSeconds();
-        System.out.println(432);
-        mediaPlayer.seek(Duration.millis((timeSlider.getValue() / 100) * end * 1000));
+        }, 0, 100);
     }
 
     public void cancelTimer() {
@@ -591,56 +311,88 @@ public class Controller implements Initializable{
         timer.cancel();
     }
 
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    //Обработка прогресс бара
 
+    public void progressBarHandler(MouseEvent event) {
+        Bounds b = songProgressBar.getBoundsInParent();
+        double left = b.getMinX();
+        double right = b.getMaxX();
+        double mouseX = event.getSceneX();
+        double p = (mouseX-left+2) / (right - left-2);
 
+        if (!(mediaPlayer == null)) {
+            double t = mediaPlayer.getTotalDuration().toMinutes() * p;
+            if (event.getEventType().equals(MouseEvent.MOUSE_EXITED)) {
+                tip.setVisible(false);
+                changeProgressBar.setProgress(0);
+            }
+            if (event.getEventType().equals(MouseEvent.MOUSE_ENTERED)) {
+                tip.setVisible(true);
+            }
+            if (event.getEventType().equals(MouseEvent.MOUSE_ENTERED)
+                    || event.getEventType().equals(MouseEvent.MOUSE_MOVED)
+                    || event.getEventType().equals(MouseEvent.MOUSE_DRAGGED)
+                    || event.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
+                if ((mouseX >= left) && (mouseX <= right)) {
+                    tip.setVisible(true);
 
+                    AnchorPane.setLeftAnchor(tip, mouseX - 10);
 
-    //Отсюда начинается хороший код
+                    AnchorPane.setTopAnchor(tip, b.getMinY() - 20);
 
+                    String minutes = String.format("%02d", (int) Math.floor(t));
+                    String seconds = String.format("%02d", Math.round((t % 1.0) * 60.0));
+
+                    tip.setText(minutes + ":" + seconds);
+
+                    changeProgressBar.setProgress(p);
+                }
+            }
+
+            if (event.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
+                songProgressBar.setProgress(p);
+                mediaPlayer.seek(Duration.minutes(t));
+            }
+        }
+    }
+
+    //---------------------------------------------------------------------------------------------------------------
+    //Обработка плейлиста
 
 
     @FXML
-    private void onDragOverPlaylist(DragEvent event){
+    private void onDragOverPlaylist(DragEvent event) {
         List<File> files = event.getDragboard().getFiles();
 
-        if(files != null && !files.isEmpty()) {
+        if (files != null && !files.isEmpty()) {
             event.acceptTransferModes(TransferMode.ANY);
         }
     }
 
     @FXML
     private void onDragDroppedPlaylist(DragEvent event) throws IOException {
-
         List<File> files = event.getDragboard().getFiles();
 
         uploadTracks(files);
-
-    }
-    public void deleteSong (ActionEvent event){
-        for (int i = 0; i<files.length; i++){
-            System.out.println(files[i].getName());
-            System.out.println(songLabel.getText());
-            if (files[i].getName().equals((songLabel.getText().split("/"))[1])) {
-                current_playlist.getChildren().remove(i);
-                break;
-            }
-        }
     }
 
     public void clearPlaylist() {
-        next_pt_id = 0;
-
+        songNumber = 0;
+        songs.clear();
         current_playlist.getChildren().clear();
+        nextButton.setStyle("-fx-background-color:  #bababa");
     }
 
 
     public void onAddTrackButton() {
         try {
-        FileChooser fileChooser = new FileChooser();
-        List<File> files = fileChooser.showOpenMultipleDialog(pane.getScene().getWindow());
+            FileChooser fileChooser = new FileChooser();
+            List<File> files = fileChooser.showOpenMultipleDialog(pane.getScene().getWindow());
 
-        uploadTracks(files);
-        } catch (Exception e) {}
+            uploadTracks(files);
+        } catch (Exception e) {
+        }
     }
 
 
@@ -651,118 +403,143 @@ public class Controller implements Initializable{
 
             playlistLabel.setText(dir.getName());
 
-            List<File> files = new ArrayList<>();
-            for (File file : dir.listFiles()){
-                files.add(file);
-            }
+            List<File> files = new ArrayList<>(Arrays.asList(dir.listFiles()));
+            songNumber = 0;
+            songs.clear();
             current_playlist.getChildren().clear();
             uploadTracks(files);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
-    final String pt_buttonID_sample = "pt_button_";
-
-    public void uploadTracks(List<File> files){
-
-
+    public void uploadTracks(List<File> files) {
 
         int k = 0;
 
-        while(k < files.size()) {
+        while (k < files.size()) {
             File file = files.get(k);
 
             //скип папки и добавление в треков из неё в массив
             if (file.isDirectory()) {
-                for(File f : file.listFiles()){
-                    files.add(f);
+                for (File f : file.listFiles()) {
+                    if(file.getName().endsWith(".mp3")
+                            || file.getName().endsWith(".wav")){
+                        files.add(f);
+                    }
                 }
                 k += 1;
                 continue;
             }
 
+            if(file.getName().endsWith(".mp3")
+                    || file.getName().endsWith(".wav")){
+                createTrackButton(file);
+            }
 
-
-            createTrackButton(file);
-
-            if (songs.size() > 1){
+            if (songs.size() > 1) {
                 nextButton.setStyle("-fx-background-color:  #ffbc00");
             }
 
             k += 1;
         }
-
-
-
-
     }
 
-    public void createTrackButton(File file){
-        String songName = file.getName();
-        trackButton trackbutton = new trackButton(file, pt_buttonID_sample + next_pt_id, playlistWidth);
+    public void createTrackButton(File file) {
+        trackButton trackbutton = new trackButton(file, playlistWidth);
 
         trackbutton.label.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                    if(mouseEvent.getClickCount() == 1) {
+                if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                    if (mouseEvent.getClickCount() == 1) {
                         try {
                             cancelTimer();
 
                             songProgressBar.setProgress(0.0);
 
-
                             player_isPlaying = false;
                             playButton.setText("▶");
 
                             mediaPlayer.pause();
-                        } catch (Exception e){}
+                        } catch (Exception e) {
+                        }
+                        songNumber = songs.indexOf(trackbutton);
 
-                        songNumber = Integer.parseInt(trackbutton.getId().split("_")[2]);
-                        songLabel.setText(songName);
+                        setMedia(file);
 
-                        media = new Media(file.toURI().toString());
-                        mediaPlayer = new MediaPlayer(media);
-
-                    } else if(mouseEvent.getClickCount() == 2) {
+                    } else if (mouseEvent.getClickCount() == 2) {
                         try {
                             cancelTimer();
                             mediaPlayer.pause();
-                        } catch (Exception e){}
+                        } catch (Exception e) {
+                        }
 
-                        songNumber = Integer.parseInt(trackbutton.getId().split("_")[2]);
-                        songLabel.setText(songName);
+                        songNumber = songs.indexOf(trackbutton);
 
-                        media = new Media(file.toURI().toString());
-                        mediaPlayer = new MediaPlayer(media);
-
+                        setMedia(file);
                         playMedia();
                     }
-                } 
+                }
             }
         });
-        
+
         trackbutton.deleteButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(mouseEvent.getButton().equals(MouseButton.PRIMARY)){
-                    if(mouseEvent.getClickCount() == 1) {
-                        
-                        
-                        
-                    } 
+                if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+
+                    int index = songs.indexOf(trackbutton);
+
+                    songNumber--;
+
+                    current_playlist.getChildren().remove(index);
+                    songs.remove(index);
+
+                    if (songs.size() <= 1) {
+                        nextButton.setStyle("-fx-background-color:  #bababa");
+                    }
                 }
             }
         });
 
         songs.add(trackbutton);
         current_playlist.getChildren().add(trackbutton);
-
-
-        next_pt_id += 1;
     }
 
+    public void setMedia(File file) {
+        media = new Media(file.toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
 
+        songLabel.setText(file.getName());
+        mediaPlayer.setOnReady(new Runnable() {
+            @Override
+            public void run() {
+                currentTime.setVisible(true);
+                currentTime.setText("00:00");
 
+                fullTime.setVisible(true);
+                double t = mediaPlayer.getTotalDuration().toMinutes();
+                String minutes = String.format("%02d", (int) Math.floor(t));
+                String seconds = String.format("%02d", Math.round((t % 1.0) * 60.0));
+                fullTime.setText(minutes + ":" + seconds);
+            }
+        });
+
+        System.out.println(mediaPlayer.getOnPlaying() == null);
+
+        if(songs.size() > 0 && !(mediaPlayer.getOnPlaying() == null)) {
+            mediaPlayer.setOnPlaying(new Runnable() {
+                @Override
+                public void run() {
+                    double current = mediaPlayer.getCurrentTime().toSeconds();
+                    double end = mediaPlayer.getTotalDuration().toSeconds();
+                    songProgressBar.setProgress(current/end);
+                }
+            });
+        }
+
+        System.out.println(mediaPlayer.getOnPlaying() == null);
+    }
 
 }
 

@@ -1,0 +1,18 @@
+.scroll-pane {
+    -fx-hbar-policy: NEVER;
+    -fx-vbar-policy: ALWAYS;
+}
+
+.scroll-bar:vertical {
+    -fx-pref-width: 10;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #bababa;
+    -fx-background-radius: 5;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: #bababa;
+}

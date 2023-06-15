@@ -20,11 +20,10 @@ public class trackButton extends HBox {
     Label label;
 
 
-    public trackButton(File file, String id, double width){
+    public trackButton(File file, double width){
         path = file.getAbsolutePath();
 
         name = file.getName();
-
 
         //стиль названия
         label = new Label();
@@ -47,7 +46,6 @@ public class trackButton extends HBox {
         deleteButton.setMaxWidth(width / 8);
 
         //стиль всей панельки
-        this.setId(id);
         this.setStyle("-fx-border-color: #000000");
 
         this.getChildren().addAll(label, deleteButton);
