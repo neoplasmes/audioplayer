@@ -13,23 +13,23 @@
 <AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="517.0" prefWidth="959.0" style="-fx-background-color: #222222;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auidoplayer.Controller">
    <children>
       <TextField fx:id="changeLabelName" layoutX="655.0" layoutY="15.0" prefHeight="25.0" prefWidth="249.0" visible="false" />
-      <Label fx:id="songLabel" alignment="CENTER" layoutX="4.0" layoutY="333.0" prefHeight="93.0" prefWidth="623.0" text="MP3 Player&#10;" textFill="#ffbc00">
+      <Label fx:id="songLabel" alignment="CENTER" layoutX="4.0" layoutY="333.0" prefHeight="93.0" prefWidth="623.0" text="эээ бэээ&#10;" textFill="#ffbc00">
          <font>
             <Font name="System Bold" size="41.0" />
          </font>
       </Label>
-      <ProgressBar fx:id="songProgressBar" layoutX="8.0" layoutY="419.0" onMouseDragged="#progressBarHandler" onMouseEntered="#progressBarHandler" onMouseExited="#progressBarHandler" onMouseMoved="#progressBarHandler" onMousePressed="#progressBarHandler" onMouseReleased="#progressBarHandler" prefHeight="18.0" prefWidth="623.0" progress="0.0" style="-fx-padding: 0;" />
-      <Button fx:id="playButton" layoutX="291.0" layoutY="457.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="46.0" prefWidth="57.0" style="-fx-background-color: #ffbc00;" text="▶" textFill="WHITE">
+      <ProgressBar fx:id="songProgressBar" layoutX="8.0" layoutY="419.0" prefHeight="18.0" prefWidth="623.0" progress="0.0" style="-fx-padding: 0; -fx-border-insets: 0; -fx-background-color: #bababa;" />
+      <Button fx:id="playButton" layoutX="291.0" layoutY="457.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="46.0" prefWidth="57.0" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="▶" textFill="WHITE">
          <font>
             <Font name="System Bold" size="22.0" />
          </font>
       </Button>
-      <Button fx:id="previousButton" layoutX="226.0" layoutY="457.0" mnemonicParsing="false" onAction="#previousMedia" prefHeight="46.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="◀◀" textFill="WHITE">
+      <Button fx:id="previousButton" layoutX="226.0" layoutY="457.0" mnemonicParsing="false" onAction="#previousMedia" prefHeight="46.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="◀◀" textFill="WHITE">
          <font>
             <Font size="21.0" />
          </font>
       </Button>
-      <Button fx:id="nextButton" layoutX="358.0" layoutY="457.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="46.0" prefWidth="55.0" style="-fx-background-color: #bababa;" text="▶▶" textFill="WHITE">
+      <Button id="nextButton" fx:id="nextButton" layoutX="358.0" layoutY="457.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="46.0" prefWidth="55.0" style="-fx-background-color: #bababa;" stylesheets="@main.css" text="▶▶" textFill="WHITE">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
@@ -40,17 +40,17 @@
             <VBox fx:id="current_playlist" onDragDropped="#onDragDroppedPlaylist" onDragOver="#onDragOverPlaylist" prefHeight="384.0" prefWidth="285.0" style="-fx-background-color: #FFFFFF;" />
          </content>
       </ScrollPane>
-      <Button fx:id="ulpoadPlaylistButton" layoutX="879.0" layoutY="466.0" mnemonicParsing="false" onAction="#onUploadButton" style="-fx-background-color: #ffbc00;" text="Upload">
+      <Button fx:id="ulpoadPlaylistButton" layoutX="879.0" layoutY="466.0" mnemonicParsing="false" onAction="#onUploadButton" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="Upload">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
-      <Button fx:id="clearPlaylistButton" layoutX="761.0" layoutY="467.0" mnemonicParsing="false" onAction="#clearPlaylist" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" text="Clear">
+      <Button fx:id="clearPlaylistButton" layoutX="761.0" layoutY="467.0" mnemonicParsing="false" onAction="#clearPlaylist" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="Clear">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
-      <Label fx:id="playlistLabel" alignment="CENTER" layoutX="718.0" layoutY="2.0" onMouseClicked="#clickPlaylistName" prefHeight="35.0" prefWidth="167.0" text="Name" textFill="#ffbc00">
+      <Label fx:id="playlistLabel" alignment="CENTER" layoutX="718.0" layoutY="2.0" onMouseClicked="#clickPlaylistName" prefHeight="35.0" prefWidth="167.0" text="Name" textFill="#ddad26">
          <font>
-            <Font name="System Bold" size="34.0" />
+            <Font name="Consolas" size="34.0" />
          </font>
       </Label>
       <Button fx:id="saveNameButton" layoutX="924.0" layoutY="15.0" mnemonicParsing="false" onAction="#changePlaylistName" prefHeight="25.0" prefWidth="22.0" style="-fx-background-color: #ffbc00;" text="S" visible="false">
@@ -58,13 +58,13 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="addButton" layoutX="827.0" layoutY="466.0" mnemonicParsing="false" onAction="#onAddTrackButton" style="-fx-background-color: #ffbc00;" text="Add">
+      <Button fx:id="addButton" layoutX="827.0" layoutY="466.0" mnemonicParsing="false" onAction="#onAddTrackButton" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="Add">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
       <Label fx:id="currentTime" layoutX="15.0" layoutY="442.0" text="Label" textFill="#ffbc00" />
       <Label fx:id="fullTime" layoutX="599.0" layoutY="441.0" text="Label" textFill="#ffbc00" />
-      <Label fx:id="tip" layoutX="21.0" layoutY="399.0" text="tip" textFill="#ffbc00" />
+      <Label fx:id="tip" layoutX="21.0" layoutY="399.0" text="tip" textFill="#4d8fd6" />
    </children>
 </AnchorPane>

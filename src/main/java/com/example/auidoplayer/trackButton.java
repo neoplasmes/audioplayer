@@ -19,9 +19,11 @@ public class trackButton extends HBox {
     Button deleteButton;
     Label label;
 
-
+    final int p = 9;
     public trackButton(File file, double width){
         path = file.getAbsolutePath();
+
+        String style = getClass().getResource("trackbutton.css").toString();
 
         name = file.getName();
 
@@ -29,24 +31,39 @@ public class trackButton extends HBox {
         label = new Label();
         label.setText(name);
 
-        label.setMinHeight(40);
-        label.setMaxHeight(40);
+        label.setMinHeight(width / p);
+        label.setMaxHeight(width / p);
 
-        label.setMinWidth(width / 8 * 7);
-        label.setMaxWidth(width / 8 * 7);
+        label.setMinWidth(width / p * (p-1));
+        label.setMaxWidth(width / p * (p-1));
+        label.getStylesheets().add(style);
+
+
 
         //стиль кнопки
         deleteButton = new Button();
-        deleteButton.setText("del");
+        //deleteButton.setText("del");
 
-        deleteButton.setMinHeight(40);
-        deleteButton.setMaxHeight(40);
+        deleteButton.setMinHeight(width / p);
+        deleteButton.setMaxHeight(width / p);
 
-        deleteButton.setMinWidth(width / 8);
-        deleteButton.setMaxWidth(width / 8);
+        deleteButton.setMinWidth(width / p);
+        deleteButton.setMaxWidth(width / p);
+
+        deleteButton.getStylesheets().add(style);
 
         //стиль всей панельки
-        this.setStyle("-fx-border-color: #000000");
+        this.getStyleClass().add("hbox-style");
+        this.getStylesheets().add(style);
+
+
+        this.setOnMouseEntered(mouseEvent -> {
+            this.getStyleClass().add("hbox-style-hover");
+        });
+
+        this.setOnMouseExited(mouseEvent -> {
+            this.getStyleClass().remove("hbox-style-hover");
+        });
 
         this.getChildren().addAll(label, deleteButton);
     }

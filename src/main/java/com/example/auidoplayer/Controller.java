@@ -37,7 +37,6 @@ import javafx.util.Duration;
 import org.json.*;
 
 public class Controller implements Initializable {
-
     @FXML
     private AnchorPane pane;
     @FXML
@@ -66,14 +65,11 @@ public class Controller implements Initializable {
     Label tip;
     private ArrayList<trackButton> songs;
     private boolean player_isPlaying = false;
-    //Конец моего
-
     protected static Media media;
     protected static MediaPlayer mediaPlayer;
 
     private int songNumber;
     private Timer timer;
-    private TimerTask task;
 
     private boolean running;
 
@@ -94,11 +90,10 @@ public class Controller implements Initializable {
             }
         });
 
-        songProgressBar.setStyle("-fx-accent: #4D8FD6;");
+        songProgressBar.setStyle("-fx-accent: #abebdd;");
 
         changeProgressBar = new ProgressBar(0);
-        changeProgressBar.setStyle("-fx-accent: #4D8FD6;");
-        changeProgressBar.setOpacity(0.5);
+        changeProgressBar.setStyle("-fx-accent: #abebdd; -fx-opacity: 0.5;");
         changeProgressBar.setPrefWidth(songProgressBar.getPrefWidth());
         changeProgressBar.setPrefHeight(songProgressBar.getPrefHeight());
         changeProgressBar.setBlendMode(BlendMode.MULTIPLY);
@@ -384,7 +379,6 @@ public class Controller implements Initializable {
         nextButton.setStyle("-fx-background-color:  #bababa");
     }
 
-
     public void onAddTrackButton() {
         try {
             FileChooser fileChooser = new FileChooser();
@@ -524,21 +518,6 @@ public class Controller implements Initializable {
                 fullTime.setText(minutes + ":" + seconds);
             }
         });
-
-        System.out.println(mediaPlayer.getOnPlaying() == null);
-
-        if(songs.size() > 0 && !(mediaPlayer.getOnPlaying() == null)) {
-            mediaPlayer.setOnPlaying(new Runnable() {
-                @Override
-                public void run() {
-                    double current = mediaPlayer.getCurrentTime().toSeconds();
-                    double end = mediaPlayer.getTotalDuration().toSeconds();
-                    songProgressBar.setProgress(current/end);
-                }
-            });
-        }
-
-        System.out.println(mediaPlayer.getOnPlaying() == null);
     }
 
 }
