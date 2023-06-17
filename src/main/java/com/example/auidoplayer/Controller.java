@@ -122,15 +122,17 @@ public class Controller implements Initializable {
             throw new RuntimeException(e);
         }
 
-        JSONObject jo = new JSONObject(data);
-        JSONArray arr = jo.getJSONArray("tracks");
-
-        List<File> list = new ArrayList<>();
-        for (Object o : arr){
-            list.add(new File(o.toString()));
-        }
-
-        if(list.size() > 0) {uploadTracks(list);}
+        try {
+            JSONObject jo = new JSONObject(data);
+            JSONArray arr = jo.getJSONArray("tracks");
+            List<File> list = new ArrayList<>();
+            for (Object o : arr) {
+                list.add(new File(o.toString()));
+            }
+            if (list.size() > 0) {
+                uploadTracks(list);
+            }
+        }catch (Exception e) {System.out.println("ыыыыыыыыы");}
 
 
 
