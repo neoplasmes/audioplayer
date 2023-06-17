@@ -135,7 +135,6 @@ public class Controller implements Initializable {
         }catch (Exception e) {System.out.println("ыыыыыыыыы");}
 
 
-
         CircleKnob low_knob = new CircleKnob(25, "Low");
         low_knob.setLayoutY(480);
         low_knob.setLayoutX(40);
@@ -179,8 +178,21 @@ public class Controller implements Initializable {
             }
         });
 
+        CircleKnob speed_knob = new CircleKnob(25, "Speed");
+        speed_knob.setLayoutY(480);
+        speed_knob.setLayoutX(250);
 
-        pane.getChildren().addAll(low_knob, mid_knob, high_knob);
+        speed_knob.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                if(!(mediaPlayer == null)){
+                    mediaPlayer.setRate(speed_knob.getValue()*2);
+                }
+            }
+        });
+
+
+        pane.getChildren().addAll(low_knob, mid_knob, high_knob, speed_knob);
 
     }
 
