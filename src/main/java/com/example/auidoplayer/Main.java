@@ -30,6 +30,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("css.fxml")));
         Parent root = loader.load();
         Scene scene = new Scene(root);
+        stage.setTitle("Detroit team");
         stage.setScene(scene);
         stage.show();
 
