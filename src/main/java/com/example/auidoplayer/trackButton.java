@@ -19,7 +19,7 @@ public class trackButton extends HBox {
     Button deleteButton;
     Label label;
 
-    final int p = 9;
+    final int p = 10;
     public trackButton(File file, double width){
         path = file.getAbsolutePath();
 

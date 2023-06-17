@@ -10,21 +10,21 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="517.0" prefWidth="959.0" style="-fx-background-color: #222222;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auidoplayer.Controller">
+<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="520.0" prefWidth="959.0" style="-fx-background-color: #222222;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.auidoplayer.Controller">
    <children>
       <TextField fx:id="changeLabelName" layoutX="655.0" layoutY="15.0" prefHeight="25.0" prefWidth="249.0" visible="false" />
-      <Label fx:id="songLabel" alignment="CENTER" layoutX="169.0" layoutY="354.0" prefHeight="72.0" prefWidth="623.0" text="Song name&#10;" textFill="#ffbc00">
+      <Label fx:id="songLabel" alignment="CENTER" layoutX="168.0" layoutY="345.0" prefHeight="72.0" prefWidth="623.0" text="Song name&#10;" textFill="#ffbc00">
          <font>
             <Font name="System Bold" size="35.0" />
          </font>
       </Label>
-      <ProgressBar fx:id="songProgressBar" layoutX="173.0" layoutY="419.0" prefHeight="18.0" prefWidth="623.0" progress="0.0" style="-fx-padding: 0; -fx-border-insets: 0; -fx-background-color: #ffbc00;" />
-      <Button fx:id="playButton" layoutX="451.0" layoutY="450.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="46.0" prefWidth="57.0" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="▶" textFill="WHITE">
+      <ProgressBar fx:id="songProgressBar" layoutX="172.0" layoutY="410.0" prefHeight="18.0" prefWidth="623.0" progress="0.0" style="-fx-padding: 0; -fx-border-insets: 0; -fx-background-color: #ffbc00;" />
+      <Button fx:id="playButton" layoutX="451.0" layoutY="450.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="46.0" prefWidth="57.0" stylesheets="@main.css" text="▶" textFill="WHITE">
          <font>
             <Font name="System Bold" size="22.0" />
          </font>
       </Button>
-      <Button fx:id="previousButton" layoutX="386.0" layoutY="450.0" mnemonicParsing="false" onAction="#previousMedia" prefHeight="46.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="◀◀" textFill="WHITE">
+      <Button fx:id="previousButton" layoutX="386.0" layoutY="450.0" mnemonicParsing="false" onAction="#previousMedia" prefHeight="46.0" prefWidth="55.0" stylesheets="@main.css" text="◀◀" textFill="WHITE">
          <font>
             <Font size="21.0" />
          </font>
@@ -40,11 +40,11 @@
             <VBox fx:id="current_playlist" onDragDropped="#onDragDroppedPlaylist" onDragOver="#onDragOverPlaylist" prefHeight="305.0" prefWidth="931.0" style="-fx-background-color: #FFFFFF;" />
          </content>
       </ScrollPane>
-      <Button fx:id="ulpoadPlaylistButton" layoutX="885.0" layoutY="475.0" mnemonicParsing="false" onAction="#onUploadButton" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="Upload">
+      <Button fx:id="ulpoadPlaylistButton" layoutX="885.0" layoutY="475.0" mnemonicParsing="false" onAction="#onUploadButton" stylesheets="@main.css" text="Upload">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
-      <Button fx:id="clearPlaylistButton" layoutX="765.0" layoutY="475.0" mnemonicParsing="false" onAction="#clearPlaylist" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="Clear">
+      <Button fx:id="clearPlaylistButton" layoutX="765.0" layoutY="475.0" mnemonicParsing="false" onAction="#clearPlaylist" prefHeight="25.0" prefWidth="55.0" stylesheets="@main.css" text="Clear">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
@@ -58,13 +58,13 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="addButton" layoutX="833.0" layoutY="475.0" mnemonicParsing="false" onAction="#onAddTrackButton" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="Add">
+      <Button fx:id="addButton" layoutX="833.0" layoutY="475.0" mnemonicParsing="false" onAction="#onAddTrackButton" stylesheets="@main.css" text="Add">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Label fx:id="currentTime" layoutX="180.0" layoutY="442.0" text="Label" textFill="#ffbc00" />
-      <Label fx:id="fullTime" layoutX="764.0" layoutY="441.0" text="Label" textFill="#ffbc00" />
-      <Label fx:id="tip" layoutX="186.0" layoutY="399.0" text="tip" textFill="#4d8fd6" />
+      <Label fx:id="currentTime" layoutX="179.0" layoutY="433.0" text="Label" textFill="#ffbc00" />
+      <Label fx:id="fullTime" layoutX="763.0" layoutY="432.0" text="Label" textFill="#ffbc00" />
+      <Label fx:id="tip" layoutX="185.0" layoutY="390.0" text="tip" textFill="#4d8fd6" />
    </children>
 </AnchorPane>

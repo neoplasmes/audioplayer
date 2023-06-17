@@ -11,6 +11,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.RotateEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.Circle;
@@ -25,6 +27,8 @@ public class CircleKnob extends Group {
     private Text text;
     private double radius;
     private double angle = 135;
+    private boolean evolving = false;
+    private Color evo_color;
     
     private DoubleProperty value = new DoublePropertyBase(0.0) {
         @Override
@@ -90,6 +94,9 @@ public class CircleKnob extends Group {
         pointer.setLayoutX(this.radius / 10 * 7.5 * Math.cos(Math.toRadians(ang + 135)));
         this.value.set(ang / 270);
         progress.setLength(-angle);
+        if(evolving) {
+            progress.setFill(Color.hsb(evo_color.getHue() * getValue(), evo_color.getSaturation(), evo_color.getBrightness()));
+        }
     }
 
     public double getValue(){
@@ -109,6 +116,19 @@ public class CircleKnob extends Group {
             angle -= 5;
             setAngle(angle);
         }
+    }
+
+    public void setProgressColor(Color color){
+        progress.setStyle("");
+        progress.setFill(color);
+    }
+
+    public void setProgressColor(Color color, boolean e){
+        progress.setStyle("");
+        progress.setFill(color);
+        evolving = e;
+        evo_color = color;
+        setAngle(angle);
     }
 
 

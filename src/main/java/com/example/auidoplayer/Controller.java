@@ -31,6 +31,7 @@ import javafx.scene.layout.*;
 import javafx.scene.media.EqualizerBand;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -73,6 +74,11 @@ public class Controller implements Initializable {
 
     private boolean running;
 
+    private CircleKnob low_knob;
+    private CircleKnob mid_knob;
+    private CircleKnob high_knob;
+    private CircleKnob speed_knob;
+
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         tip.setVisible(false);
@@ -101,9 +107,10 @@ public class Controller implements Initializable {
         pane.getChildren().add(changeProgressBar);
         AnchorPane.setTopAnchor(changeProgressBar, songProgressBar.getLayoutY());
         AnchorPane.setLeftAnchor(changeProgressBar, songProgressBar.getLayoutX());
-        changeProgressBar.addEventHandler(MouseEvent.ANY, mouseEvent -> progressBarHandler(mouseEvent));
-
-        System.out.println(currentPlaylistScroll.getPrefWidth());
+        changeProgressBar.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> progressBarHandler(mouseEvent));
+        changeProgressBar.addEventHandler(MouseEvent.MOUSE_ENTERED, mouseEvent -> progressBarHandler(mouseEvent));
+        changeProgressBar.addEventHandler(MouseEvent.MOUSE_EXITED, mouseEvent -> progressBarHandler(mouseEvent));
+        changeProgressBar.addEventHandler(MouseEvent.MOUSE_MOVED, mouseEvent -> progressBarHandler(mouseEvent));
 
         currentPlaylistScroll.getStylesheets().add(getClass().getResource("scrollpane.css").toString());
         currentPlaylistScroll.setContent(current_playlist);
@@ -135,8 +142,8 @@ public class Controller implements Initializable {
         }catch (Exception e) {System.out.println("ыыыыыыыыы");}
 
 
-        CircleKnob low_knob = new CircleKnob(25, "Low");
-        low_knob.setLayoutY(480);
+        low_knob = new CircleKnob(25, "Low");
+        low_knob.setLayoutY(485);
         low_knob.setLayoutX(40);
 
         low_knob.valueProperty().addListener(new ChangeListener<Number>() {
@@ -150,8 +157,8 @@ public class Controller implements Initializable {
             }
         });
 
-        CircleKnob mid_knob = new CircleKnob(25, "Mid");
-        mid_knob.setLayoutY(480);
+        mid_knob = new CircleKnob(25, "Mid");
+        mid_knob.setLayoutY(485);
         mid_knob.setLayoutX(110);
         mid_knob.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -164,8 +171,8 @@ public class Controller implements Initializable {
             }
         });
 
-        CircleKnob high_knob = new CircleKnob(25, "High");
-        high_knob.setLayoutY(480);
+        high_knob = new CircleKnob(25, "High");
+        high_knob.setLayoutY(485);
         high_knob.setLayoutX(180);
         high_knob.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -178,9 +185,10 @@ public class Controller implements Initializable {
             }
         });
 
-        CircleKnob speed_knob = new CircleKnob(25, "Speed");
-        speed_knob.setLayoutY(480);
+        speed_knob = new CircleKnob(25, "Speed");
+        speed_knob.setLayoutY(485);
         speed_knob.setLayoutX(250);
+        speed_knob.setProgressColor(Color.hsb(95, 0.65, 0.88), true);
 
         speed_knob.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -389,9 +397,7 @@ public class Controller implements Initializable {
                 tip.setVisible(true);
             }
             if (event.getEventType().equals(MouseEvent.MOUSE_ENTERED)
-                    || event.getEventType().equals(MouseEvent.MOUSE_MOVED)
-                    || event.getEventType().equals(MouseEvent.MOUSE_DRAGGED)
-                    || event.getEventType().equals(MouseEvent.MOUSE_PRESSED)) {
+                    || event.getEventType().equals(MouseEvent.MOUSE_MOVED)) {
                 if ((mouseX >= left) && (mouseX <= right)) {
                     tip.setVisible(true);
 
@@ -408,7 +414,10 @@ public class Controller implements Initializable {
                 }
             }
 
-            if (event.getEventType().equals(MouseEvent.MOUSE_RELEASED)) {
+            if (event.getEventType().equals(MouseEvent.MOUSE_CLICKED)) {
+                String minutes = String.format("%02d", (int) Math.floor(t));
+                String seconds = String.format("%02d", Math.round((t % 1.0) * 60.0));
+                currentTime.setText(minutes + ":" + seconds);
                 songProgressBar.setProgress(p);
                 mediaPlayer.seek(Duration.minutes(t));
             }
@@ -493,10 +502,6 @@ public class Controller implements Initializable {
                 createTrackButton(file);
             }
 
-            if (songs.size() > 1) {
-                nextButton.setStyle("-fx-background-color:  #ffbc00");
-            }
-
             k += 1;
         }
     }
@@ -561,6 +566,10 @@ public class Controller implements Initializable {
 
         songs.add(trackbutton);
         current_playlist.getChildren().add(trackbutton);
+
+        if(!(mediaPlayer == null) && songs.size() > 1){
+            nextButton.setStyle("-fx-background-color:  #ffbc00");
+        }
     }
 
     //СДЕЛАТЬ обработку серой кнопки здесь, а не при аплоуде.
@@ -580,6 +589,20 @@ public class Controller implements Initializable {
                 String minutes = String.format("%02d", (int) Math.floor(t));
                 String seconds = String.format("%02d", Math.round((t % 1.0) * 60.0));
                 fullTime.setText(minutes + ":" + seconds);
+                nextButton.setStyle("-fx-background-color:  #ffbc00");
+
+                //ставим заново настройеи
+                mediaPlayer.getAudioEqualizer().getBands().get(1).setGain(-12.0 + 24 * low_knob.getValue());
+                mediaPlayer.getAudioEqualizer().getBands().get(2).setGain(-12.0 + 24 * low_knob.getValue());
+                mediaPlayer.getAudioEqualizer().getBands().get(3).setGain(-12.0 + 24 * low_knob.getValue());
+                mediaPlayer.getAudioEqualizer().getBands().get(4).setGain(-12.0 + 24 * mid_knob.getValue());
+                mediaPlayer.getAudioEqualizer().getBands().get(5).setGain(-12.0 + 24 * mid_knob.getValue());
+                mediaPlayer.getAudioEqualizer().getBands().get(6).setGain(-12.0 + 24 * mid_knob.getValue());
+                mediaPlayer.getAudioEqualizer().getBands().get(7).setGain(-12.0 + 24 * high_knob.getValue());
+                mediaPlayer.getAudioEqualizer().getBands().get(8).setGain(-12.0 + 24 * high_knob.getValue());
+                mediaPlayer.getAudioEqualizer().getBands().get(9).setGain(-12.0 + 24 * high_knob.getValue());
+
+                mediaPlayer.setRate(speed_knob.getValue()*2);
             }
         });
     }
