@@ -19,17 +19,17 @@
          </font>
       </Label>
       <ProgressBar fx:id="songProgressBar" layoutX="8.0" layoutY="419.0" prefHeight="18.0" prefWidth="623.0" progress="0.0" style="-fx-padding: 0; -fx-border-insets: 0; -fx-background-color: #bababa;" />
-      <Button fx:id="playButton" layoutX="291.0" layoutY="457.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="46.0" prefWidth="57.0" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="▶" textFill="WHITE">
+      <Button fx:id="playButton" layoutX="291.0" layoutY="457.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="46.0" prefWidth="57.0" stylesheets="@main.css" text="▶" textFill="WHITE">
          <font>
             <Font name="System Bold" size="22.0" />
          </font>
       </Button>
-      <Button fx:id="previousButton" layoutX="226.0" layoutY="457.0" mnemonicParsing="false" onAction="#previousMedia" prefHeight="46.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="◀◀" textFill="WHITE">
+      <Button fx:id="previousButton" layoutX="226.0" layoutY="457.0" mnemonicParsing="false" onAction="#previousMedia" prefHeight="46.0" prefWidth="55.0" stylesheets="@main.css" text="◀◀" textFill="WHITE">
          <font>
             <Font size="21.0" />
          </font>
       </Button>
-      <Button id="nextButton" fx:id="nextButton" layoutX="358.0" layoutY="457.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="46.0" prefWidth="55.0" style="-fx-background-color: #bababa;" stylesheets="@main.css" text="▶▶" textFill="WHITE">
+      <Button id="nextButtonOff" fx:id="nextButton" layoutX="358.0" layoutY="457.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="46.0" prefWidth="55.0" style="-fx-background-color: #bababa;" stylesheets="@main.css" text="▶▶" textFill="WHITE">
          <font>
             <Font name="System Bold" size="21.0" />
          </font>
@@ -40,15 +40,15 @@
             <VBox fx:id="current_playlist" onDragDropped="#onDragDroppedPlaylist" onDragOver="#onDragOverPlaylist" prefHeight="384.0" prefWidth="285.0" style="-fx-background-color: #FFFFFF;" />
          </content>
       </ScrollPane>
-      <Button fx:id="ulpoadPlaylistButton" layoutX="879.0" layoutY="466.0" mnemonicParsing="false" onAction="#onUploadButton" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="Upload">
+      <Button fx:id="ulpoadPlaylistButton" layoutX="879.0" layoutY="466.0" mnemonicParsing="false" onAction="#onUploadButton" stylesheets="@main.css" text="Upload">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
-      <Button fx:id="clearPlaylistButton" layoutX="761.0" layoutY="467.0" mnemonicParsing="false" onAction="#clearPlaylist" prefHeight="25.0" prefWidth="55.0" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="Clear">
+      <Button fx:id="clearPlaylistButton" layoutX="761.0" layoutY="467.0" mnemonicParsing="false" onAction="#clearPlaylist" prefHeight="25.0" prefWidth="55.0" stylesheets="@main.css" text="Clear">
          <font>
             <Font name="System Bold" size="12.0" />
          </font></Button>
-      <Label fx:id="playlistLabel" alignment="CENTER" layoutX="718.0" layoutY="2.0" onMouseClicked="#clickPlaylistName" prefHeight="35.0" prefWidth="167.0" text="Name" textFill="#ddad26">
+      <Label fx:id="playlistLabel" alignment="CENTER" layoutX="718.0" layoutY="2.0" onMouseClicked="#clickPlaylistName" prefHeight="35.0" prefWidth="167.0" text="Name" textFill="#e07700">
          <font>
             <Font name="Consolas" size="34.0" />
          </font>
@@ -58,7 +58,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <Button fx:id="addButton" layoutX="827.0" layoutY="466.0" mnemonicParsing="false" onAction="#onAddTrackButton" style="-fx-background-color: #ffbc00;" stylesheets="@main.css" text="Add">
+      <Button fx:id="addButton" layoutX="827.0" layoutY="466.0" mnemonicParsing="false" onAction="#onAddTrackButton" stylesheets="@main.css" text="Add">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>

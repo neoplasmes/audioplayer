@@ -131,6 +131,55 @@ public class Controller implements Initializable {
         }
 
         if(list.size() > 0) {uploadTracks(list);}
+
+
+
+        CircleKnob low_knob = new CircleKnob(25, "Low");
+        low_knob.setLayoutY(480);
+        low_knob.setLayoutX(40);
+
+        low_knob.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                if(!(mediaPlayer == null)){
+                    mediaPlayer.getAudioEqualizer().getBands().get(1).setGain(-12.0 + 24 * low_knob.getValue());
+                    mediaPlayer.getAudioEqualizer().getBands().get(2).setGain(-12.0 + 24 * low_knob.getValue());
+                    mediaPlayer.getAudioEqualizer().getBands().get(3).setGain(-12.0 + 24 * low_knob.getValue());
+                }
+            }
+        });
+
+        CircleKnob mid_knob = new CircleKnob(25, "Mid");
+        mid_knob.setLayoutY(480);
+        mid_knob.setLayoutX(110);
+        mid_knob.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                if(!(mediaPlayer == null)){
+                    mediaPlayer.getAudioEqualizer().getBands().get(4).setGain(-12.0 + 24 * mid_knob.getValue());
+                    mediaPlayer.getAudioEqualizer().getBands().get(5).setGain(-12.0 + 24 * mid_knob.getValue());
+                    mediaPlayer.getAudioEqualizer().getBands().get(6).setGain(-12.0 + 24 * mid_knob.getValue());
+                }
+            }
+        });
+
+        CircleKnob high_knob = new CircleKnob(25, "High");
+        high_knob.setLayoutY(480);
+        high_knob.setLayoutX(180);
+        high_knob.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                if(!(mediaPlayer == null)){
+                    mediaPlayer.getAudioEqualizer().getBands().get(7).setGain(-12.0 + 24 * high_knob.getValue());
+                    mediaPlayer.getAudioEqualizer().getBands().get(8).setGain(-12.0 + 24 * high_knob.getValue());
+                    mediaPlayer.getAudioEqualizer().getBands().get(9).setGain(-12.0 + 24 * high_knob.getValue());
+                }
+            }
+        });
+
+
+        pane.getChildren().addAll(low_knob, mid_knob, high_knob);
+
     }
 
 
@@ -308,7 +357,7 @@ public class Controller implements Initializable {
 
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //Обработка прогресс бара
-
+    //сделать драг, прес и релиз необрабатываемыми, сделать обновление таймкода при (клике на бар И медиа на паузе)
     public void progressBarHandler(MouseEvent event) {
         Bounds b = songProgressBar.getBoundsInParent();
         double left = b.getMinX();
@@ -500,6 +549,7 @@ public class Controller implements Initializable {
         current_playlist.getChildren().add(trackbutton);
     }
 
+    //СДЕЛАТЬ обработку серой кнопки здесь, а не при аплоуде.
     public void setMedia(File file) {
         media = new Media(file.toURI().toString());
         mediaPlayer = new MediaPlayer(media);
